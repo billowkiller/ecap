@@ -100,6 +100,8 @@ class Xaction: public adapter::Xaction {
         std::string fetchHeaderValue(shared_ptr<Message> &adapted, const Name &name);
         /* not completed */
         bool validRequestHeader(shared_ptr<Message> &adapted);
+		
+		void blockRequest(){ hostx->blockVirgin(); }
 };
 
 } // namespace Adapter
@@ -193,6 +195,9 @@ void Adapter::Xaction::start() {
     {
         fetchRequestInfo(adapted);
         Debugger()<<request_info.url;
+		
+		if(request_info.url.find("douban") != std::string::npos)
+			blockRequest();
 		
 		if (!adapted->body()) 
 		{
