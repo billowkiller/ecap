@@ -1,6 +1,7 @@
 #include "sample.h"
 #include "Debugger.h"
 #include "Gzipper.h"
+#include "RequestHandler.h"
 #include <string>
 #include <stdlib.h>
 #include <iostream>
@@ -98,13 +99,14 @@ class Xaction: public adapter::Xaction {
         OperationState receivingVb;
         OperationState sendingAb;
 
-        struct {
-            std::string url;
-            std::string referrer;
-            std::string cookie;
-            std::string content;
-        } request_info;
-
+//        struct {
+//            std::string url;
+//            std::string referrer;
+//            std::string cookie;
+//            std::string content;
+//        } request_info;
+//
+        RequestHandler::RequestInfo request_info;
         /* parse request header value for four-tuple */
         void fetchRequestInfo(shared_ptr<Message> &adapted, RequestLine *requestLine);
         std::string fetchHeaderValue(shared_ptr<Message> &adapted, const Name &name);

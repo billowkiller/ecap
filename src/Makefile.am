@@ -6,6 +6,8 @@ noinst_HEADERS = \
 	header.h \
 	Debugger.h\
 	Gzipper.h\
+	SubsFilter.h\
+	BufferString.h\
 	\
 	autoconf.h 
 
@@ -13,10 +15,11 @@ noinst_HEADERS = \
 ecap_adapter_fbac_la_SOURCES = Xaction.cc \
 	Service.cc \
 	Debugger.cc \
-	Gzipper.cc
+	Gzipper.cc \
+	SubsFilter.cc 
 
 ecap_adapter_fbac_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_adapter_bbkanba_la_LIBADD= $(LIBECAP_LIBS) -lz
+ecap_adapter_fbac_la_LIBADD= $(LIBECAP_LIBS) -lz
 
 # -shared -export-dynamic -Wl,-soname,ecap_noop_adapter.so
 

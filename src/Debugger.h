@@ -3,6 +3,10 @@
 
 #include <libecap/common/log.h>
 #include <iosfwd>
+#include <string>
+#include <sstream>
+#include <typeinfo>
+
 
 using libecap::ilNormal;
 using libecap::ilCritical;
@@ -22,8 +26,20 @@ class Debugger {
 		// logs a message if host enabled debugging at the specified level
 		template <class T>
 		const Debugger &operator <<(const T &msg) const {
+		
 			if (debug)
-				*debug << msg;
+			{
+				if(typeid(std::string) == typeid(msg))  
+					*debug << msg;
+				else
+				{
+					std::stringstream ss;
+					std::string s;
+					ss << msg;
+					ss >> s;
+					*debug << s;
+				}
+			}
 			return *this;
 		}
 

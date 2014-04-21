@@ -100,9 +100,9 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-ecap_adapter_fbac_la_LIBADD =
+ecap_adapter_fbac_la_DEPENDENCIES =
 am_ecap_adapter_fbac_la_OBJECTS = Xaction.lo Service.lo Debugger.lo \
-	Gzipper.lo
+	Gzipper.lo SubsFilter.lo
 ecap_adapter_fbac_la_OBJECTS = $(am_ecap_adapter_fbac_la_OBJECTS)
 ecap_adapter_fbac_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -265,6 +265,8 @@ noinst_HEADERS = \
 	header.h \
 	Debugger.h\
 	Gzipper.h\
+	SubsFilter.h\
+	BufferString.h\
 	\
 	autoconf.h 
 
@@ -273,10 +275,11 @@ noinst_HEADERS = \
 ecap_adapter_fbac_la_SOURCES = Xaction.cc \
 	Service.cc \
 	Debugger.cc \
-	Gzipper.cc
+	Gzipper.cc \
+	SubsFilter.cc 
 
 ecap_adapter_fbac_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_adapter_bbkanba_la_LIBADD = $(LIBECAP_LIBS) -lz
+ecap_adapter_fbac_la_LIBADD = $(LIBECAP_LIBS) -lz
 
 # -shared -export-dynamic -Wl,-soname,ecap_noop_adapter.so
 DISTCLEANFILES = \
@@ -377,6 +380,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Gzipper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Service.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SubsFilter.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xaction.Plo@am__quote@
 
 .cc.o:
