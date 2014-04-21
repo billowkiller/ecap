@@ -1,8 +1,7 @@
-#include "header.h"
+#include "RespHeader.h"
 
-const Name Adapter::Xaction::cookieName = Name("Cookie");
-const Name Adapter::Xaction::contentTypeName= Name("Content-Type");
 const Name Adapter::Xaction::contentEncodingName= Name("Content-Encoding");
+const Name Adapter::Xaction::contentTypeName= Name("Content-Type");
 
 Adapter::Xaction::Xaction(host::Xaction *x): hostx(x),receivingVb(opUndecided), sendingAb(opUndecided) {
 }
@@ -27,32 +26,24 @@ void Adapter::Xaction::start() {
 
     if (hostx->virgin().body()) {
         receivingVb = opOn;
-        dzBuffer="";
         hostx->vbMake(); // ask host to supply virgin body
     } else {
         receivingVb = opNever;
     }
 
-    Header::Value Adapter::Xaction::clientIP = hostx->option(metaClientIp);
+    clientIP = hostx->option(metaClientIp);
     shared_ptr<Message> adapted = hostx->virgin().clone();
     Must(adapted != 0);
 
-    /*  request  or response */
-    if ( (requestLine = dynamic_cast<RequestLine *>(&hostx->virgin().firstLine())) && validRequestHeader(requestLine) )
-    {
-        fetchRequestInfo(adapted, requestLine);
-        Debugger()<<request_info.url;
-    }
-    else if((statusLine = dynamic_cast<StatusLine*>(&hostx->virgin().firstLine())) && validResponseHeader(adapted) )
-    {
-
-		/* if the contentencoding is gzip and has data, 
-		 *then remove contentlength and add transferencoding.
-		 */
-		std::string sContentLen = fetchHeaderValue(adapted, headerContentLength);
-        if(fetchHeaderValue(adapted, contentEncodingName).find("gzip") != std::string::npos && sContentLen != "")
-        {
-			content_length = atoi(sContentLen.c_str());
+	if (!adapted->body())
+	{
+		sendingAb = opNever; // there is nothing to send
+        lastHostCall()->useAdapted(adapted);
+	}
+	else
+	{
+		if(validResponseHeader(adapted))
+		{
 			shared_ptr<Gzipper> pg(new Gzipper(content_length));
 			sp_zipper = pg;
 			adapted->header().removeAny(headerContentLength);
@@ -60,23 +51,15 @@ void Adapter::Xaction::start() {
 			const Header::Value transferEncodingValue = Area::FromTempString("chunked");
 			adapted->header().add(headerTransferEncoding, transferEncodingValue);
 			
-// 			Debugger() << "headerTransferEncoding: " << fetchHeaderValue(adapted, headerTransferEncoding);
-        }
-        else {
+			Debugger() << "headerTransferEncoding: " << fetchHeaderValue(adapted, headerTransferEncoding);
+			
+			hostx->useAdapted(adapted);
+		}
+		else
+		{
 			hostx->useVirgin();
 			abDiscard();
-			return;
 		}
-    }
-    
-    if (!adapted->body())
-	{
-		sendingAb = opNever; // there is nothing to send
-        lastHostCall()->useAdapted(adapted);
-	}
-	else
-	{
-        hostx->useAdapted(adapted);
 	}
 }
 
@@ -100,8 +83,8 @@ void Adapter::Xaction::abMake()
     Must(receivingVb == opOn || receivingVb == opComplete);
 
     sendingAb = opOn;
-    if (!dzBuffer.empty())
-        hostx->noteAbContentAvailable();
+    
+	hostx->noteAbContentAvailable();
 }
 
 void Adapter::Xaction::abMakeMore()
@@ -126,7 +109,8 @@ Area Adapter::Xaction::abContent(size_type offset, size_type size) {
     if (sendingAb == opComplete) {
         return libecap::Area::FromTempString("");
     }
-    offset = sp_zipper->sendingOffset + offset;
+    
+	offset = sp_zipper->sendingOffset + offset;
 	size = sp_zipper->compressedSize - offset;
 	
 	return Area::FromTempBuffer((const char*)(sp_zipper->getCData(offset)), size);
@@ -134,12 +118,15 @@ Area Adapter::Xaction::abContent(size_type offset, size_type size) {
 
 void Adapter::Xaction::abContentShift(size_type size) {
     Must(sendingAb == opOn || sendingAb == opComplete);
+	
 	sp_zipper->sendingOffset += size;
 }
 
 void Adapter::Xaction::noteVbContentDone(bool atEnd) {  
+	
+	
 	Must(sp_zipper);
-		sp_zipper->Finish_zipper();
+	sp_zipper->Finish_zipper();
 		
     Must(receivingVb == opOn);
     receivingVb = opComplete;
@@ -159,25 +146,11 @@ void Adapter::Xaction::noteVbContentAvailable() {
     std::string chunk = vb.toString(); // expensive, but simple
     hostx->vbContentShift(vb.size);
 	
-    sp_zipper->addData(chunk, vb.size);
+	sp_zipper->addData(chunk, vb.size);
 
     if (sendingAb == opOn)
     {
         hostx->noteAbContentAvailable();
-    }
-}
-
-void Adapter::Xaction::fetchRequestInfo(shared_ptr<Message> &adapted, RequestLine *requestLine) {
-
-    this->request_info.url = requestLine->uri().toString();
-    this->request_info.referrer = fetchHeaderValue(adapted, headerReferer);
-    this->request_info.cookie = fetchHeaderValue(adapted, cookieName);
-       
-    if(methodGet == requestLine->method())
-        this->request_info.content = "";
-    else if(adapted->body()){
-        const Area vb = hostx->vbContent(0, nsize); // get all vb
-        this->request_info.content = vb.toString();
     }
 }
 
@@ -190,36 +163,22 @@ std::string Adapter::Xaction::fetchHeaderValue(shared_ptr<Message> &adapted, con
     return "";
 }
 
-bool Adapter::Xaction::validRequestHeader(RequestLine *requestLine) {
-    bool hvalidation = false;
-    std::string uri = requestLine->uri().toString();
-    if(uri.rfind("jpg") != std::string::npos)
-        return hvalidation;
-    if(uri.rfind("css") != std::string::npos)
-        return hvalidation;
-    if(uri.rfind("js") != std::string::npos)
-        return hvalidation;
-	if(uri.rfind("png") != std::string::npos)
-        return hvalidation;
-	if(uri.rfind("jpeg") != std::string::npos)
-        return hvalidation;
-	if(uri.rfind("gif") != std::string::npos)
-        return hvalidation;
-    return !hvalidation;
-}
 bool Adapter::Xaction::validResponseHeader(shared_ptr<Message> &adapted)
 {
-    bool hvalidation = false;
-    std::string content_type = fetchHeaderValue(adapted, contentTypeName);
-    if(content_type.find("text/html") != std::string::npos)
-        return !hvalidation;
-    return hvalidation;
+	std::string sContentLen = fetchHeaderValue(adapted, headerContentLength);
+	if(sContentLen == "")
+		return false;
+	content_length = atoi(sContentLen.c_str());
+	
+    if(fetchHeaderValue(adapted, contentTypeName).find("text/html") == std::string::npos)
+        return false;
+	
+	if(fetchHeaderValue(adapted, contentEncodingName).find("gzip") == std::string::npos)
+		return false;
+	
+    return true;
 }
 
-template <typename T> void Adapter::Xaction::print(T &a)
-{
-    Debugger(ilNormal|flApplication) << a;
-}
 bool Adapter::Xaction::callable() const {
 	return hostx != 0; // no point to call us if we are done
 }

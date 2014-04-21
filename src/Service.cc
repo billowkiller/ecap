@@ -1,7 +1,7 @@
-#include "header.h"
+#include "RespHeader.h"
 
 std::string Adapter::Service::uri() const {
-	return "ecap://billowkiller.com/fbac";
+	return "ecap://billowkiller.com/response";
 }
 
 std::string Adapter::Service::tag() const {
@@ -9,7 +9,7 @@ std::string Adapter::Service::tag() const {
 }
 
 void Adapter::Service::describe(std::ostream &os) const {
-	os << "A minimal adapter from " << PACKAGE_NAME << " v" << PACKAGE_VERSION;
+	os << "A response adapter from " << PACKAGE_NAME << " v" << PACKAGE_VERSION;
 }
 
 void Adapter::Service::configure(const Options &) {

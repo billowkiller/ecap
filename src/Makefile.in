@@ -100,13 +100,19 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-ecap_adapter_fbac_la_DEPENDENCIES =
-am_ecap_adapter_fbac_la_OBJECTS = Xaction.lo Service.lo Debugger.lo \
-	Gzipper.lo SubsFilter.lo
-ecap_adapter_fbac_la_OBJECTS = $(am_ecap_adapter_fbac_la_OBJECTS)
-ecap_adapter_fbac_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+ecap_request_la_DEPENDENCIES =
+am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo
+ecap_request_la_OBJECTS = $(am_ecap_request_la_OBJECTS)
+ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(ecap_adapter_fbac_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(ecap_request_la_LDFLAGS) $(LDFLAGS) -o $@
+ecap_response_la_DEPENDENCIES =
+am_ecap_response_la_OBJECTS = RespXaction.lo Service.lo Debugger.lo \
+	Gzipper.lo SubsFilter.lo
+ecap_response_la_OBJECTS = $(am_ecap_response_la_OBJECTS)
+ecap_response_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(ecap_response_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = 
 depcomp = $(SHELL) $(top_srcdir)/cfgaux/depcomp
 am__depfiles_maybe = depfiles
@@ -120,8 +126,8 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(ecap_adapter_fbac_la_SOURCES)
-DIST_SOURCES = $(ecap_adapter_fbac_la_SOURCES)
+SOURCES = $(ecap_request_la_SOURCES) $(ecap_response_la_SOURCES)
+DIST_SOURCES = $(ecap_request_la_SOURCES) $(ecap_response_la_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -258,11 +264,12 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = \
-	ecap_adapter_fbac.la
+	ecap_response.la \
+	ecap_request.la
 
 noinst_HEADERS = \
 	sample.h \
-	header.h \
+	RespHeader.h \
 	Debugger.h\
 	Gzipper.h\
 	SubsFilter.h\
@@ -271,15 +278,22 @@ noinst_HEADERS = \
 	autoconf.h 
 
 
-# minimal
-ecap_adapter_fbac_la_SOURCES = Xaction.cc \
+# request
+ecap_request_la_SOURCES = ReqXaction.cc \
+				Debugger.cc
+
+ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
+ecap_request_la_LIBADD = $(LIBECAP_LIBS)
+
+# response
+ecap_response_la_SOURCES = RespXaction.cc \
 	Service.cc \
 	Debugger.cc \
 	Gzipper.cc \
 	SubsFilter.cc 
 
-ecap_adapter_fbac_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_adapter_fbac_la_LIBADD = $(LIBECAP_LIBS) -lz
+ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
+ecap_response_la_LIBADD = $(LIBECAP_LIBS) -lz
 
 # -shared -export-dynamic -Wl,-soname,ecap_noop_adapter.so
 DISTCLEANFILES = \
@@ -368,8 +382,10 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-ecap_adapter_fbac.la: $(ecap_adapter_fbac_la_OBJECTS) $(ecap_adapter_fbac_la_DEPENDENCIES) $(EXTRA_ecap_adapter_fbac_la_DEPENDENCIES) 
-	$(ecap_adapter_fbac_la_LINK) -rpath $(libdir) $(ecap_adapter_fbac_la_OBJECTS) $(ecap_adapter_fbac_la_LIBADD) $(LIBS)
+ecap_request.la: $(ecap_request_la_OBJECTS) $(ecap_request_la_DEPENDENCIES) $(EXTRA_ecap_request_la_DEPENDENCIES) 
+	$(ecap_request_la_LINK) -rpath $(libdir) $(ecap_request_la_OBJECTS) $(ecap_request_la_LIBADD) $(LIBS)
+ecap_response.la: $(ecap_response_la_OBJECTS) $(ecap_response_la_DEPENDENCIES) $(EXTRA_ecap_response_la_DEPENDENCIES) 
+	$(ecap_response_la_LINK) -rpath $(libdir) $(ecap_response_la_OBJECTS) $(ecap_response_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -379,9 +395,10 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Debugger.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Gzipper.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ReqXaction.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RespXaction.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SubsFilter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Xaction.Plo@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

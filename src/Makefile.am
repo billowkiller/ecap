@@ -1,9 +1,10 @@
 lib_LTLIBRARIES = \
-	ecap_adapter_fbac.la
+	ecap_response.la \
+	ecap_request.la
 
 noinst_HEADERS = \
 	sample.h \
-	header.h \
+	RespHeader.h \
 	Debugger.h\
 	Gzipper.h\
 	SubsFilter.h\
@@ -11,15 +12,22 @@ noinst_HEADERS = \
 	\
 	autoconf.h 
 
-# minimal
-ecap_adapter_fbac_la_SOURCES = Xaction.cc \
+# request
+ecap_request_la_SOURCES = ReqXaction.cc \
+				Debugger.cc
+
+ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
+ecap_request_la_LIBADD= $(LIBECAP_LIBS)
+
+# response
+ecap_response_la_SOURCES = RespXaction.cc \
 	Service.cc \
 	Debugger.cc \
 	Gzipper.cc \
 	SubsFilter.cc 
 
-ecap_adapter_fbac_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_adapter_fbac_la_LIBADD= $(LIBECAP_LIBS) -lz
+ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
+ecap_response_la_LIBADD= $(LIBECAP_LIBS) -lz
 
 # -shared -export-dynamic -Wl,-soname,ecap_noop_adapter.so
 

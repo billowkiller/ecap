@@ -82,41 +82,23 @@ class Xaction: public adapter::Xaction {
 		host::Xaction *lastHostCall(); // clears hostx
 
 	private:
-
-        static const Name cookieName;
-        static const Name contentTypeName;
+		static const Name contentTypeName;
         static const Name contentEncodingName;
-
-        std::string dzBuffer;
 		int content_length;
 
         StatusLine *statusLine;
-        RequestLine *requestLine;
 		host::Xaction *hostx; // Host transaction rep
         shared_ptr<Gzipper> sp_zipper;
+		Header::Value clientIP;
 
         typedef enum { opUndecided, opOn, opComplete, opNever } OperationState;
         OperationState receivingVb;
         OperationState sendingAb;
-
-//        struct {
-//            std::string url;
-//            std::string referrer;
-//            std::string cookie;
-//            std::string content;
-//        } request_info;
-//
-        RequestHandler::RequestInfo request_info;
-        /* parse request header value for four-tuple */
-        void fetchRequestInfo(shared_ptr<Message> &adapted, RequestLine *requestLine);
+		
         std::string fetchHeaderValue(shared_ptr<Message> &adapted, const Name &name);
-        /* not completed */
-        bool validRequestHeader(RequestLine *requestLine);
+		
         /* not completed */
         bool validResponseHeader(shared_ptr<Message> &adapted);
-
-        template <typename T> void print(T &a);
-
         
 };
 
