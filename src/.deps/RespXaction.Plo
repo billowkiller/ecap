@@ -102,8 +102,9 @@ RespXaction.lo: RespXaction.cc RespHeader.h sample.h autoconf.h \
  /usr/include/c++/4.7/tr1/type_traits \
  /usr/include/c++/4.7/tr1/shared_ptr.h SubsFilter.h \
  /usr/include/c++/4.7/cstring /usr/include/string.h \
- /usr/include/i386-linux-gnu/bits/string3.h BufferString.h \
- RequestHandler.h /usr/include/stdlib.h \
+ /usr/include/i386-linux-gnu/bits/string3.h /usr/include/c++/4.7/list \
+ /usr/include/c++/4.7/bits/stl_list.h /usr/include/c++/4.7/bits/list.tcc \
+ BufferString.h RequestHandler.h /usr/include/stdlib.h \
  /usr/include/i386-linux-gnu/bits/waitflags.h \
  /usr/include/i386-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
  /usr/include/i386-linux-gnu/bits/stdlib.h /usr/include/c++/4.7/iostream \
@@ -398,6 +399,12 @@ SubsFilter.h:
 /usr/include/string.h:
 
 /usr/include/i386-linux-gnu/bits/string3.h:
+
+/usr/include/c++/4.7/list:
+
+/usr/include/c++/4.7/bits/stl_list.h:
+
+/usr/include/c++/4.7/bits/list.tcc:
 
 BufferString.h:
 

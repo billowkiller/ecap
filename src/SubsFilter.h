@@ -1,4 +1,6 @@
 #include <cstring>
+#include <list>
+#include <tr1/memory>
 #include "BufferString.h"
 
 class SubsFilter {
@@ -13,8 +15,11 @@ public:
 	BufferString buffer;
 	
 	private:
-		
+		typedef std::list<BufferString> BSList;
+		BSList sendingList;
+		void storeSendingData(BufferString bs);
 		bool fetchLine(BufferString &bs);
 		void contentCheck();
 		const unsigned chunkSize = 4096;
+		std::tr1::shared_ptr<char> cPool;
 };

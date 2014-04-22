@@ -90,8 +90,6 @@ int Gzipper::inflateData(std::string &compressed_data, unsigned dlen) {
         ungzipState = opFail;
         return ret;
     }
-
-
     
     u_offset += 9*dlen - u_strm.avail_out;
 	
@@ -103,7 +101,6 @@ int Gzipper::inflateData(std::string &compressed_data, unsigned dlen) {
         ungzipState = opComplete;
 		
 		subsFilter.addContent(0);
-		assert(uData.get()[u_offset-1] == '\n');
 		//Debugger() << "u_offset = " << u_offset;
     }
     
