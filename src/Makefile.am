@@ -9,15 +9,28 @@ noinst_HEADERS = \
 	Gzipper.h\
 	SubsFilter.h\
 	BufferString.h\
+	RequestHandler.h\
+	parser.h\
+	urlparser.h\
+	qs_parse.h\
+	kw_match.h\
+	sqlite.h\
 	\
 	autoconf.h 
 
 # request
 ecap_request_la_SOURCES = ReqXaction.cc \
-				Debugger.cc
+				Debugger.cc\
+				RequestHandler.cc\
+				parser.cc\
+				urlparser.cc\
+				qs_parse.cc\
+				kw_match.cc\
+				sqlite.cc
+				
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_request_la_LIBADD= $(LIBECAP_LIBS)
+ecap_request_la_LIBADD= $(LIBECAP_LIBS) -lglib-2.0 -lsqlite3
 
 # response
 ecap_response_la_SOURCES = RespXaction.cc \

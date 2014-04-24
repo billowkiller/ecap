@@ -101,7 +101,9 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 ecap_request_la_DEPENDENCIES =
-am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo
+am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo \
+	RequestHandler.lo parser.lo urlparser.lo qs_parse.lo \
+	kw_match.lo sqlite.lo
 ecap_request_la_OBJECTS = $(am_ecap_request_la_OBJECTS)
 ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -137,13 +139,13 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run aclocal-1.11
+ACLOCAL = ${SHELL} /home/billowkiller/ecap/cfgaux/missing --run aclocal-1.11
 AMTAR = $${TAR-tar}
 AR = /usr/bin/ar
 AR_R = /usr/bin/ar r
-AUTOCONF = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run automake-1.11
+AUTOCONF = ${SHELL} /home/billowkiller/ecap/cfgaux/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/billowkiller/ecap/cfgaux/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/billowkiller/ecap/cfgaux/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -181,7 +183,7 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/billowkiller/ecap/cfgaux/missing --run makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
@@ -207,10 +209,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 0.2.0
-abs_builddir = /home/billowkiller/Downloads/ecap/src
-abs_srcdir = /home/billowkiller/Downloads/ecap/src
-abs_top_builddir = /home/billowkiller/Downloads/ecap
-abs_top_srcdir = /home/billowkiller/Downloads/ecap
+abs_builddir = /home/billowkiller/ecap/src
+abs_srcdir = /home/billowkiller/ecap/src
+abs_top_builddir = /home/billowkiller/ecap
+abs_top_srcdir = /home/billowkiller/ecap
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -240,7 +242,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/install-sh
+install_sh = ${SHELL} /home/billowkiller/ecap/cfgaux/install-sh
 libdir = ${exec_prefix}/lib
 libecap_CFLAGS = -I/usr/local/include  
 libecap_LIBS = -L/usr/local/lib -lecap  
@@ -274,16 +276,28 @@ noinst_HEADERS = \
 	Gzipper.h\
 	SubsFilter.h\
 	BufferString.h\
+	RequestHandler.h\
+	parser.h\
+	urlparser.h\
+	qs_parse.h\
+	kw_match.h\
+	sqlite.h\
 	\
 	autoconf.h 
 
 
 # request
 ecap_request_la_SOURCES = ReqXaction.cc \
-				Debugger.cc
+				Debugger.cc\
+				RequestHandler.cc\
+				parser.cc\
+				urlparser.cc\
+				qs_parse.cc\
+				kw_match.cc\
+				sqlite.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_request_la_LIBADD = $(LIBECAP_LIBS)
+ecap_request_la_LIBADD = $(LIBECAP_LIBS) -lglib-2.0 -lsqlite3
 
 # response
 ecap_response_la_SOURCES = RespXaction.cc \
@@ -396,9 +410,15 @@ distclean-compile:
 include ./$(DEPDIR)/Debugger.Plo
 include ./$(DEPDIR)/Gzipper.Plo
 include ./$(DEPDIR)/ReqXaction.Plo
+include ./$(DEPDIR)/RequestHandler.Plo
 include ./$(DEPDIR)/RespXaction.Plo
 include ./$(DEPDIR)/Service.Plo
 include ./$(DEPDIR)/SubsFilter.Plo
+include ./$(DEPDIR)/kw_match.Plo
+include ./$(DEPDIR)/parser.Plo
+include ./$(DEPDIR)/qs_parse.Plo
+include ./$(DEPDIR)/sqlite.Plo
+include ./$(DEPDIR)/urlparser.Plo
 
 .cc.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

@@ -16,6 +16,34 @@
 #include <libecap/adapter/service.h>
 #include <libecap/host/host.h> 
 #include <libecap/host/xaction.h>
+#include <sqlite3.h>
+#include "kw_match.h"
+
+
+/* 
+ * ===  FUNCTION  ======================================================================
+ *         Name:  init_sqlite
+ *  Description:  
+ * =====================================================================================
+ */
+sqlite3 *db = NULL;
+int init_sqlite()
+{
+    char* dbpath="/opt/lampp/htdocs/FBControlUI/rulecontrol/fbac.db";
+   
+    int rc;
+    //open the database file.If the file is not exist,it will create a file.
+    rc = sqlite3_open(dbpath, &db);
+    if(rc)
+    {
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
+		sqlite3_close(db);
+        return 0;
+    }
+	return 1;
+}		/* -----  end of function init_sqlite  ----- */
+
+
 
 using namespace libecap;
 
@@ -190,22 +218,45 @@ void Adapter::Xaction::start() {
 	shared_ptr<Message> adapted = hostx->virgin().clone();
 	Must(adapted != 0);
 	
+		
+		
+		
+		init_sqlite();
+		
+	
 	
 	if (validRequestHeader(adapted))
     {
         fetchRequestInfo(adapted);
-        Debugger()<<request_info.url;
 		
+        Debugger()<<request_info.url;
+		/*
 		if(request_info.url.find("douban") != std::string::npos)
 			blockRequest();
+		*/
+	
+		
 		
 		if (!adapted->body()) 
 		{
+			
+			
+			RequestHandler* qh=new RequestHandler(request_info);
+			
+		    if(!qh->checkValidation())
+		   {
+			  
+			blockRequest();
+			Debugger()<<"blocked";
+			
+		   }
+		    delete qh;
 			sendingAb = opNever; // there is nothing to send
 			lastHostCall()->useAdapted(adapted);
 		} 
 		else
 			hostx->useAdapted(adapted);
+		
     }
     else
 	{
@@ -290,6 +341,34 @@ void Adapter::Xaction::noteVbContentAvailable() {
 	hostx->vbContentShift(vb.size); 
 	dzBuffer += chunk; 
 	
+	request_info.content=dzBuffer;
+	
+	
+			RequestHandler* qh=new RequestHandler(request_info);
+			
+		    if(!qh->checkValidation())
+		   {
+			  
+			blockRequest();
+			Debugger()<<"blocked";
+			
+		   }
+		    delete qh;
+// 	RequestHandler* qh=new RequestHandler(request_info);
+// 		
+// 		if(!qh->checkValidation())
+// 		{
+// 			blockRequest();
+// 			Debugger()<<"blocked";
+// 			
+// 		}
+// 		delete qh;
+	
+	
+	
+	
+	
+	
 	std::string a("dzBuffer: ");
 	Debugger() << a << dzBuffer;
 	
@@ -302,13 +381,15 @@ void Adapter::Xaction::fetchRequestInfo(shared_ptr<Message> &adapted) {
     request_info.referrer = fetchHeaderValue(adapted, headerReferer);
     request_info.cookie = fetchHeaderValue(adapted, cookieName);
 	request_info.content = "";
-       
-//     if(methodGet == requestLine->method())
-//         request_info.content = "";
-//     else if(adapted->body()){
-//         const Area vb = hostx->vbContent(0, nsize); // get all vb
-//         request_info.content = vb.toString();
-//     }
+   
+/*
+     if(methodGet == requestLine->method())
+         request_info.content = "";
+     else if(adapted->body()){
+         const Area vb = hostx->vbContent(0, nsize); // get all vb
+         request_info.content = vb.toString();
+     }
+*/
 }
 
 std::string Adapter::Xaction::fetchHeaderValue(shared_ptr<Message> &adapted, const Name &headerName) {
@@ -326,11 +407,12 @@ bool Adapter::Xaction::validRequestHeader(shared_ptr<Message> &adapted) {
 	
     request_info.url = requestLine->uri().toString();
 	
-    if(request_info.url.rfind("jpg") != std::string::npos)
-        return false;
-    if(request_info.url.rfind("css") != std::string::npos)
+	if(request_info.url.rfind("css") != std::string::npos)
         return false;
     if(request_info.url.rfind("js") != std::string::npos)
+        return false;
+	/*
+    if(request_info.url.rfind("jpg") != std::string::npos)
         return false;
 	if(request_info.url.rfind("png") != std::string::npos)
         return false;
@@ -338,6 +420,7 @@ bool Adapter::Xaction::validRequestHeader(shared_ptr<Message> &adapted) {
         return false;
 	if(request_info.url.rfind("gif") != std::string::npos)
         return false;
+	*/
     return true;
 }
 

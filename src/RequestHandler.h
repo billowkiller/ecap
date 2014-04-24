@@ -1,4 +1,5 @@
 #include <string>
+#include "parser.h"
 
 class RequestHandler
 {
@@ -10,10 +11,16 @@ class RequestHandler
             std::string content;
         } RequestInfo;
 
+       
+
         RequestHandler(RequestInfo info):request_info(info){}; 
         bool checkValidation();
+        void _init_c_info();
 
     private:
-
+        struct connection_info c_info;
         RequestInfo &request_info;
+        
+        
+        
 };
