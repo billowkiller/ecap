@@ -14,6 +14,7 @@ noinst_HEADERS = \
 	urlparser.h\
 	qs_parse.h\
 	kw_match.h\
+	ac.h\
 	sqlite.h\
 	\
 	autoconf.h 
@@ -26,6 +27,7 @@ ecap_request_la_SOURCES = ReqXaction.cc \
 				urlparser.cc\
 				qs_parse.cc\
 				kw_match.cc\
+				ac.cc\
 				sqlite.cc
 				
 

@@ -18,7 +18,7 @@
 
 
 #include "kw_match.h"
-
+#include "ac.h"
 #define MAXWORD 30
 #define MAXURL 500
 
@@ -127,6 +127,7 @@ int url_match(char *str)
 }
 int kw_match(char *str)
 {
+	int rt=0;
 	GList *g_kw_list = NULL;
 	FILE *file = fopen("/home/billowkiller/ecap/src/keywords", "r");
 	while(TRUE)
@@ -142,8 +143,17 @@ int kw_match(char *str)
 	
 	
 	if(str[0]=='\0')
+	{
+		g_list_free_full(g_kw_list,free_string);
 		return 0;
+	}
+		
 	printf("str = %s\n", str);
+	initial_goto(g_kw_list);
+    buildFail();
+	if(ac(str))
+		rt=1;
+	/*
 	GList *iterator = NULL;
 	for (iterator = g_kw_list; iterator; iterator = iterator->next)
 		 if(strstr(str, (char*)iterator->data))
@@ -152,6 +162,7 @@ int kw_match(char *str)
 			 g_list_free_full(g_kw_list,free_string);
 			 return 1;
 		 }
+	*/
 	g_list_free_full(g_kw_list,free_string);	 
-	return 0;
+	return rt;
 }

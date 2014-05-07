@@ -103,7 +103,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 ecap_request_la_DEPENDENCIES =
 am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo \
 	RequestHandler.lo parser.lo urlparser.lo qs_parse.lo \
-	kw_match.lo sqlite.lo
+	kw_match.lo ac.lo sqlite.lo
 ecap_request_la_OBJECTS = $(am_ecap_request_la_OBJECTS)
 ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -281,6 +281,7 @@ noinst_HEADERS = \
 	urlparser.h\
 	qs_parse.h\
 	kw_match.h\
+	ac.h\
 	sqlite.h\
 	\
 	autoconf.h 
@@ -294,6 +295,7 @@ ecap_request_la_SOURCES = ReqXaction.cc \
 				urlparser.cc\
 				qs_parse.cc\
 				kw_match.cc\
+				ac.cc\
 				sqlite.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
@@ -414,6 +416,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RespXaction.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SubsFilter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/kw_match.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qs_parse.Plo@am__quote@
