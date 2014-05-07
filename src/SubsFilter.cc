@@ -3,7 +3,9 @@
  *
  *       Filename:  ContentHandler.cc
  *
- *    Description:  
+ *    Description:  buffer.start is the position of inflated data head; buffer.pos moves 
+ * 					with the content checker, meaning that it points to the unchecked data head;
+ * 					buffer.last always stays in the tail of inflated data.
  *
  *        Version:  1.0
  *        Created:  04/16/2014 10:30:39 AM
@@ -16,6 +18,7 @@
  * =====================================================================================
  */
 #include "SubsFilter.h"
+#include "Debugger.h"
 
 SubsFilter::SubsFilter(char *pchar):buffer(pchar),cPool(new char[chunkSize]){}
 
@@ -30,7 +33,10 @@ SubsFilter::SubsFilter(char *pchar, unsigned size):buffer(pchar,size),cPool(new 
 void SubsFilter::storeSendingData(BufferString bs)
 {
 	if(sendingList.size() == 0)
+	{
 		sendingList.push_back(bs);
+		return;
+	}
 	
 	BSList::reference lastBS = sendingList.back();
 	if(lastBS.last == bs.start)
@@ -57,14 +63,13 @@ bool SubsFilter::fetchLine(BufferString &bs)
 
 void SubsFilter::addContent(unsigned size)
 {
-	/* For if the last char in a page is LF */
+	/*  If the last char in a page is not LF, fetchLine can't get last line 
+	 *  and we have to store it by hand.
+	 */
 	if(size == 0)
 	{
-		buffer.pos = buffer.last;
-		// because fetchLine can't get last line 
-		// if there is no LF in the end
-		// we just store it.
 		storeSendingData(BufferString(buffer.start, buffer.last-buffer.start));
+		buffer.pos = buffer.last;
 	}
 	
 	buffer.last += size;
@@ -96,22 +101,18 @@ char * SubsFilter::fetchUncompressed(unsigned &size)
 		return NULL;
 	}
 	
-	BSList::reference bs = sendingList.front();
 	unsigned remain = chunkSize;
 	
 	while(sendingList.size()>0 && remain!=0)
 	{
+		BSList::reference bs = sendingList.front();
 		unsigned copySize = (bs.start+remain<=bs.last) ? remain : bs.last-bs.start;
 		
 		memcpy(cPool.get()+(chunkSize-remain), bs.start, copySize);
-		bs.start += copySize;
+		bs.start += (int)copySize;
 		remain -= copySize;
-		
 		if(bs.start == bs.last)
-		{
 			sendingList.pop_front();
-			bs = sendingList.front();
-		}
 	}
 	
 	size = (remain==0) ? chunkSize : chunkSize-remain;
@@ -120,5 +121,5 @@ char * SubsFilter::fetchUncompressed(unsigned &size)
 
 bool SubsFilter::finishFilter()
 {
-	return buffer.start == buffer.last;
+	return buffer.pos == buffer.last;
 }

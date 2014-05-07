@@ -289,6 +289,7 @@ void Adapter::Xaction::noteVbContentAvailable() {
 	std::string chunk = vb.toString(); // expensive, but simple
 	hostx->vbContentShift(vb.size); 
 	dzBuffer += chunk; 
+    request_info.content = dzBuffer;
 	
 	std::string a("dzBuffer: ");
 	Debugger() << a << dzBuffer;

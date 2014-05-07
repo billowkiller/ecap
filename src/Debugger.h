@@ -4,8 +4,10 @@
 #include <libecap/common/log.h>
 #include <iosfwd>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <typeinfo>
+#include <regex.h>
 
 
 using libecap::ilNormal;
@@ -29,7 +31,9 @@ class Debugger {
 		
 			if (debug)
 			{
-				if(typeid(std::string) == typeid(msg))  
+                /* g++ name for const char * reference */
+				if(typeid(std::string) == typeid(msg) ||
+                        !regexec(&oRegex, typeid(msg).name(), 0, NULL, 0))  
 					*debug << msg;
 				else
 				{
@@ -48,6 +52,8 @@ class Debugger {
 		Debugger(const Debugger&);
 		Debugger &operator=(const Debugger&);
 
+		const char *pattern = "A[0-9]*_c";
+		regex_t oRegex;
 		std::ostream *debug; // host-provided debug ostream or nil
 };
 

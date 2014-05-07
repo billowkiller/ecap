@@ -12,11 +12,12 @@ public:
 	void addContent(unsigned size);
 	char * fetchUncompressed(unsigned &); // return two variable
 	bool finishFilter();
-	BufferString buffer;
+	
 	
 	private:
 		typedef std::list<BufferString> BSList;
 		BSList sendingList;
+		BufferString buffer;
 		void storeSendingData(BufferString bs);
 		bool fetchLine(BufferString &bs);
 		void contentCheck();

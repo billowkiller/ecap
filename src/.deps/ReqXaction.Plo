@@ -87,8 +87,9 @@ ReqXaction.lo: ReqXaction.cc /usr/include/stdio.h /usr/include/features.h \
  /usr/local/include/libecap/common/log.h \
  /usr/local/include/libecap/common/libecap.h \
  /usr/local/include/libecap/common/autoconf.h \
- /usr/include/c++/4.7/sstream /usr/include/c++/4.7/bits/sstream.tcc \
- /usr/include/c++/4.7/typeinfo \
+ /usr/include/c++/4.7/cstring /usr/include/c++/4.7/sstream \
+ /usr/include/c++/4.7/bits/sstream.tcc /usr/include/c++/4.7/typeinfo \
+ /usr/include/regex.h /usr/include/i386-linux-gnu/gnu/option-groups.h \
  /usr/local/include/libecap/common/registry.h \
  /usr/local/include/libecap/common/forward.h \
  /usr/local/include/libecap/common/memory.h \
@@ -347,11 +348,17 @@ Debugger.h:
 
 /usr/local/include/libecap/common/autoconf.h:
 
+/usr/include/c++/4.7/cstring:
+
 /usr/include/c++/4.7/sstream:
 
 /usr/include/c++/4.7/bits/sstream.tcc:
 
 /usr/include/c++/4.7/typeinfo:
+
+/usr/include/regex.h:
+
+/usr/include/i386-linux-gnu/gnu/option-groups.h:
 
 /usr/local/include/libecap/common/registry.h:
 

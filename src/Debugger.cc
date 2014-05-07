@@ -12,6 +12,7 @@
 
 Debugger::Debugger():
 	debug(libecap::MyHost().openDebug(libecap::ilNormal|libecap::flApplication)) {
+		regcomp(&oRegex, pattern, 0);
     }       
 Debugger::Debugger(const libecap::LogVerbosity lv):
 	debug(libecap::MyHost().openDebug(lv)) {
