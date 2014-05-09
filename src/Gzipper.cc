@@ -1,13 +1,21 @@
 #include "Gzipper.h"
 #include "Debugger.h"
 #include <cstring>
-#include <sstream>
+#include <stdio.h>
 
 const u_char Gzipper::gzheader[10] = { 0x1f, 0x8b, Z_DEFLATED, 0, 0, 0, 0, 0, 0, 3 };
 
-Gzipper::Gzipper(unsigned length):compressedSize(0),u_offset(0),sendingOffset(0),
-	uData(new char[9*length]),cData(new char[2*length]),subsFilter(uData.get()) { 
+Gzipper::Gzipper(unsigned length):
+			compressedSize(0),
+			u_offset(0),
+			sendingOffset(0),
+			lastChunckSize(0),
+			contentLength(length), 
+			uData(new char[9*length]),
+			cData(new char[2*length]),
+			subsFilter(uData.get()) { 
 
+	memset(&u_strm, 0, sizeof(z_stream));
 	/* inflate */
     u_strm.zalloc = Z_NULL;
     u_strm.zfree = Z_NULL;
@@ -33,30 +41,66 @@ Gzipper::Gzipper(unsigned length):compressedSize(0),u_offset(0),sendingOffset(0)
 		compressedSize = 10;
 		checksum = crc32(0,0,0);
 	}
+	
+	Debugger() << contentLength;
 }
 
-void Gzipper::addData(std::string &compressed_data, unsigned dlen) {
+int Gzipper::addData(const libecap::Area & chunk) {
+	if(!chunk.size)  return 0;
 	
-	inflateData(compressed_data, dlen);
+	lastChunckSize = chunk.size;
+	/* 
+	 * stupid implementation of space expand when encounting chunked source.
+	 * simply expand twice the size of the origin space and copy original data.
+	 */
+	if(u_offset+lastChunckSize*9 > 9*contentLength) {
+		Debugger() << "space expand";
+		contentLength *= 2;
+		shared_array<char> temp(new char[9*contentLength]);
+		memcpy(temp.get(), uData.get(), u_offset);
+		uData.swap(temp);
+		temp.reset(new char[2*contentLength]);
+		memcpy(temp.get(), cData.get(), compressedSize);
+		cData.swap(temp);
+	}
 	
-	deflateData();
+	if(inflateData(chunk.start, lastChunckSize) == -1) {
+		Debugger() << "inflateData fail";
+		return -1;
+	}
+	if(deflateData() == -1) {
+		Debugger() << "deflateData fail";
+		return -2;
+	}
+	Debugger() << "deflate finish";
+	
+	return 1;
 }
 
 char* Gzipper::getCData(int offset)
 {
-	return (cData.get()+offset);
+	return cData.get()+offset;
+}
+
+unsigned Gzipper::getLastChunckSize() {
+	return lastChunckSize;
 }
 
 void Gzipper::Finish_zipper()
 {
+	Debugger() << "Finish_zipper start";
 	assert(gzipState == opOn);
+	assert(ungzipState == opComplete);
 	assert(subsFilter.finishFilter());
 	
 	c_strm.total_out = 0;
-	deflate(&c_strm, Z_FINISH);
-	deflateEnd(&c_strm);
+	int ret = deflate(&c_strm, Z_FINISH);
+	Debugger() << "ret = " << ret;
+	ret = deflateEnd(&c_strm);
+	Debugger() << "ret = " << ret;
 	compressedSize += c_strm.total_out;
 	
+	Debugger() << "add something";
 	char * tailer = cData.get();
 	tailer[compressedSize++] = (char) checksum & 0xff;
 	tailer[compressedSize++] = (char) (checksum>>8) & 0xff;
@@ -69,14 +113,17 @@ void Gzipper::Finish_zipper()
 	tailer[compressedSize++] = (char) (u_offset>>24) & 0xff;
 	
 	gzipState = opComplete;
+	Debugger() << "Finish_zipper, compressedSize: " <<  compressedSize;
 // 	memcpy(cData.get()+compressedSize, "\r\n0\r\n", 5);
 // 	compressedSize += 5;
 }
 
-int Gzipper::inflateData(std::string &compressed_data, unsigned dlen) {
+int Gzipper::inflateData(const char * data, unsigned dlen) {
     assert(ungzipState == opOn);
+	
+	Debugger() << "inflateData";
 
-    u_strm.next_in = (Bytef*)(compressed_data.c_str());
+    u_strm.next_in = (Bytef*)(data);
     u_strm.avail_in = dlen;
     u_strm.next_out = (Bytef*)(uData.get()+u_offset);
     u_strm.avail_out = dlen*9;
@@ -88,10 +135,12 @@ int Gzipper::inflateData(std::string &compressed_data, unsigned dlen) {
     {
         (void)inflateEnd(&u_strm);
         ungzipState = opFail;
-        return ret;
+        return -1;
     }
-    
+   
+   // Debugger() << std::string(uData.get()+u_offset, 9*dlen - u_strm.avail_out);
     u_offset += 9*dlen - u_strm.avail_out;
+	Debugger() << "u_offset = " << u_offset;
 	
 	subsFilter.addContent(9*dlen - u_strm.avail_out);
 
@@ -110,20 +159,15 @@ int Gzipper::inflateData(std::string &compressed_data, unsigned dlen) {
 int Gzipper::deflateData()
 {
 	assert(gzipState == opOn);
-
+	Debugger() << "deflateData";
 	unsigned len=0;
 	Bytef* buf_in = (Bytef*)(subsFilter.fetchUncompressed(len));
 	
-	while(NULL != buf_in)
+	while(len)
 	{
+		Debugger() << "len: " << len;
 		c_strm.next_in = buf_in;
 		c_strm.avail_in = len;
-		
-// 		char a[len+1];
-// 		memcpy(a, buf_in, len);
-// 		a[(int)(len)] = '\0';
-// 		std::string b((const char*)a);
-// 		Debugger()<< b;
 	
 		checksum = crc32(checksum, buf_in, len);
 		
@@ -138,7 +182,7 @@ int Gzipper::deflateData()
 		{
 			(void)deflateEnd(&c_strm);
 			gzipState = opFail;
-			return ret;
+			return -1;
 		}
 		
 		compressedSize += c_strm.total_out;

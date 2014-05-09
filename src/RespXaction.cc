@@ -44,8 +44,16 @@ void Adapter::Xaction::start() {
 	{
 		if(validResponseHeader(adapted))
 		{
-			shared_ptr<Gzipper> pg(new Gzipper(content_length));
-			sp_zipper = pg;
+// 			if(content_length)
+// 				sp_zipper.reset(new Gzipper(content_length));
+// 			else
+			shared_ptr<Message> request = hostx->cause().clone();
+			RequestLine *rl = dynamic_cast<RequestLine *>(&request->firstLine());
+			std::string uri = rl->uri().toString();
+			Debugger() << uri;
+			sp_zipper.reset(new Gzipper(40*1024)); //chunked encoding, use default content_length
+			
+			Debugger() << "new shared_ptr<Gzipper> ";
 			adapted->header().removeAny(headerContentLength);
 			
 			const Header::Value transferEncodingValue = Area::FromTempString("chunked");
@@ -76,6 +84,7 @@ void Adapter::Xaction::abDiscard()
 
 void Adapter::Xaction::abMake()
 {
+	Debugger() << "abMake";
     Must(sendingAb == opUndecided); // have not yet started or decided not to send
     Must(hostx->virgin().body()); // that is our only source of ab content
 
@@ -95,12 +104,14 @@ void Adapter::Xaction::abMakeMore()
 
 void Adapter::Xaction::abStopMaking()
 {
+	Debugger() << "abStopMaking";
     sendingAb = opComplete;
     // we may still continue receiving
 }
 
 
 Area Adapter::Xaction::abContent(size_type offset, size_type size) {
+	Debugger() << "abContent";
 
     // required to not raise an exception on the final call with opComplete
     Must(sendingAb == opOn || sendingAb == opComplete);
@@ -112,22 +123,26 @@ Area Adapter::Xaction::abContent(size_type offset, size_type size) {
     
 	offset = sp_zipper->sendingOffset + offset;
 	size = sp_zipper->compressedSize - offset;
+	Debugger() << "compressedSize: " << sp_zipper->compressedSize;
 	
 	return Area::FromTempBuffer((const char*)(sp_zipper->getCData(offset)), size);
 }
 
 void Adapter::Xaction::abContentShift(size_type size) {
+	Debugger() << "abContentShift";
     Must(sendingAb == opOn || sendingAb == opComplete);
 	
 	sp_zipper->sendingOffset += size;
+	Debugger() << "sp_zipper->sendingOffset: " << sp_zipper->sendingOffset;
+	
+	
 }
 
 void Adapter::Xaction::noteVbContentDone(bool atEnd) {  
-	
-	
+	Debugger() << "noteVbContentDone";
 	Must(sp_zipper);
 	sp_zipper->Finish_zipper();
-		
+	
     Must(receivingVb == opOn);
     receivingVb = opComplete;
 
@@ -135,21 +150,30 @@ void Adapter::Xaction::noteVbContentDone(bool atEnd) {
         hostx->noteAbContentDone(atEnd);
         sendingAb = opComplete;
     }
-
+    Debugger() << "connection finish";
 }
 
 void Adapter::Xaction::noteVbContentAvailable() {
 
+	Debugger() << "noteVbContentAvailable";
     Must(receivingVb == opOn);
 
+	Debugger() << "hostx->vbContent";
     const libecap::Area vb = hostx->vbContent(0, libecap::nsize); // get all vb
-    std::string chunk = vb.toString(); // expensive, but simple
-    hostx->vbContentShift(vb.size);
 	
-	sp_zipper->addData(chunk, vb.size);
+	Debugger() << "vb.size" << vb.size;
+	if(sp_zipper->addData(vb) < 0) {
+		Debugger() << "blockVirgin, abDiscard";
+		hostx->blockVirgin();
+		abDiscard();
+	}
+	
+	Debugger() << "hostx->vbContentShift: " << sp_zipper->getLastChunckSize();
+    hostx->vbContentShift(sp_zipper->getLastChunckSize());
 
     if (sendingAb == opOn)
     {
+		Debugger() << "noteAbContentAvailable";
         hostx->noteAbContentAvailable();
     }
 }
@@ -166,8 +190,9 @@ std::string Adapter::Xaction::fetchHeaderValue(shared_ptr<Message> &adapted, con
 bool Adapter::Xaction::validResponseHeader(shared_ptr<Message> &adapted)
 {
 	std::string sContentLen = fetchHeaderValue(adapted, headerContentLength);
-	if(sContentLen == "")
+	if(sContentLen=="" && fetchHeaderValue(adapted, headerTransferEncoding)=="")
 		return false;
+	
 	content_length = atoi(sContentLen.c_str());
 	
     if(fetchHeaderValue(adapted, contentTypeName).find("text/html") == std::string::npos)

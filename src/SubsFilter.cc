@@ -121,5 +121,9 @@ char * SubsFilter::fetchUncompressed(unsigned &size)
 
 bool SubsFilter::finishFilter()
 {
+	if(buffer.pos != buffer.last) {
+		Debugger() << buffer.pos;
+		Debugger() << "u_offset: " <<  buffer.last-buffer.start;
+	}
 	return buffer.pos == buffer.last;
 }

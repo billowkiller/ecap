@@ -27,7 +27,7 @@ ecap_response_la_SOURCES = RespXaction.cc \
 	SubsFilter.cc 
 
 ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_response_la_LIBADD= $(LIBECAP_LIBS) -lz
+ecap_response_la_LIBADD= $(LIBECAP_LIBS) -lz -lboost_system
 
 # -shared -export-dynamic -Wl,-soname,ecap_noop_adapter.so
 

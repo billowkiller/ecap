@@ -1,0 +1,23 @@
+Bug1-->zombie machine
+2014/05/08 22:05:26| headerTransferEncoding: chunked
+2014/05/08 22:05:26| sp_zipper->sendingOffset: 10
+2014/05/08 22:05:26| deflate finish
+2014/05/08 22:05:26| sp_zipper->sendingOffset: 14193
+*** glibc detected *** sbin/squid: malloc(): memory corruption: 0x090c2e80 ***
+ 
+
+Bug2-->(void)deflateEnd(&c_strm);
+2014/05/08 22:10:28| deflate(&c_strm, Z_FINISH)
+2014/05/08 22:10:28| ret = deflateEnd(&c_strm);   // no ret output
+2014/05/08 22:10:28| Closing HTTP port [::]:8080
+2014/05/08 22:10:28| storeDirWriteCleanLogs: Starting...
+2014/05/08 22:10:28|   Finished.  Wrote 1950 entries.
+2014/05/08 22:10:28|   Took 0.01 seconds (155168.30 entries/sec).
+
+Bug3-->zombie machine
+2014/05/08 22:14:51| headerTransferEncoding: chunked
+2014/05/08 22:14:51| sp_zipper->sendingOffset: 10
+2014/05/08 22:14:51| deflate finish
+2014/05/08 22:14:51| sp_zipper->sendingOffset: 2260
+2014/05/08 22:14:51| deflate finish
+2014/05/08 22:14:51| sp_zipper->sendingOffset: 14235

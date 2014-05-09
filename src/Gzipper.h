@@ -5,38 +5,47 @@
 #include <string>
 #include <assert.h>
 #include <zlib.h>
-#include <tr1/memory>
+#include <boost/shared_array.hpp>
+#include <boost/utility.hpp>
+#include <libecap/common/area.h>
 #include "SubsFilter.h"
-using std::tr1::shared_ptr;
+using boost::shared_array;
 
-class Gzipper
+class Gzipper : boost::noncopyable
 {
-    public:
-		
-        Gzipper(unsigned length);
+private:
+	static const unsigned size = 20 * 1024; // 20KB
+    
+public:
+	Gzipper(unsigned length=size);
 
-		void addData(std::string &, unsigned);
-		unsigned sendingOffset; //for compressed data
-		unsigned compressedSize; 
-		
-		char* getCData(int offset);
-		void Finish_zipper();
-        
-    private:
-        typedef enum { opOn, opComplete, opFail} OperationState;
-        OperationState ungzipState;
-		OperationState gzipState;
-		unsigned u_offset; //uncompressed data offset
-		shared_ptr<char> uData;
-		shared_ptr<char> cData;
-        z_stream u_strm;  //inflate z_stream
-		z_stream c_strm;
-		SubsFilter subsFilter;
-		unsigned checksum;
-		const static  u_char  gzheader[10];
+	int addData(const libecap::Area &);
+	//int addData(std::string &compressed_data, unsigned dlen);
+	unsigned sendingOffset; //for compressed data
+	unsigned compressedSize; 
+	
+	char* getCData(int offset);
+	unsigned getLastChunckSize();
+	void Finish_zipper();
+	
+    
+private:
+	typedef enum { opOn, opComplete, opFail} OperationState;
+	OperationState ungzipState;
+	OperationState gzipState;
+	unsigned u_offset; //uncompressed data offset
+	shared_array<char> uData;
+	shared_array<char> cData;
+	z_stream u_strm;  //inflate z_stream
+	z_stream c_strm;
+	SubsFilter subsFilter;
+	unsigned checksum;
+	unsigned contentLength;
+	unsigned lastChunckSize;  //record addData size
+	const static  u_char  gzheader[10];
 
-		int inflateData(std::string &, unsigned);
-        int deflateData();
+	int inflateData(const char *, unsigned);
+	int deflateData();
 		
 };
 
