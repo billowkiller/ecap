@@ -51,13 +51,16 @@ void Adapter::Xaction::start() {
 			RequestLine *rl = dynamic_cast<RequestLine *>(&request->firstLine());
 			std::string uri = rl->uri().toString();
 			Debugger() << uri;
-			sp_zipper.reset(new Gzipper(40*1024)); //chunked encoding, use default content_length
+			if(content_length) {
+				adapted->header().removeAny(headerContentLength);
+				//const Header::Value transferEncodingValue = ;
+				adapted->header().add(headerTransferEncoding, Area::FromTempString("chunked"));
+				sp_zipper.reset(new Gzipper(content_length));
+			}
+			else
+				sp_zipper.reset(new Gzipper()); //chunked encoding, use default content_length
 			
 			Debugger() << "new shared_ptr<Gzipper> ";
-			adapted->header().removeAny(headerContentLength);
-			
-			const Header::Value transferEncodingValue = Area::FromTempString("chunked");
-			adapted->header().add(headerTransferEncoding, transferEncodingValue);
 			
 			Debugger() << "headerTransferEncoding: " << fetchHeaderValue(adapted, headerTransferEncoding);
 			
@@ -140,6 +143,24 @@ void Adapter::Xaction::abContentShift(size_type size) {
 
 void Adapter::Xaction::noteVbContentDone(bool atEnd) {  
 	Debugger() << "noteVbContentDone";
+	
+// 	const libecap::Area vb = hostx->vbContent(0, libecap::nsize); // get all vb
+// 	Debugger() << "last vb.size" << vb.size;
+// 	if(sp_zipper->addData(vb) < 0) {
+// 		Debugger() << "blockVirgin, abDiscard";
+// 		hostx->blockVirgin();
+// 		abDiscard();
+// 	}
+// 	
+// 	Debugger() << "hostx->vbContentShift: " << sp_zipper->getLastChunckSize();
+//     hostx->vbContentShift(sp_zipper->getLastChunckSize());
+// 
+//     if (sendingAb == opOn)
+//     {
+// 		Debugger() << "noteAbContentAvailable";
+//         hostx->noteAbContentAvailable();
+//     }
+    
 	Must(sp_zipper);
 	sp_zipper->Finish_zipper();
 	
@@ -162,6 +183,10 @@ void Adapter::Xaction::noteVbContentAvailable() {
     const libecap::Area vb = hostx->vbContent(0, libecap::nsize); // get all vb
 	
 	Debugger() << "vb.size" << vb.size;
+// 	if(vb.size < 1024) {
+// 		hostx->noteAbContentAvailable();
+// 		return;
+// 	}
 	if(sp_zipper->addData(vb) < 0) {
 		Debugger() << "blockVirgin, abDiscard";
 		hostx->blockVirgin();

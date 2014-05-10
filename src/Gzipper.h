@@ -14,7 +14,7 @@ using boost::shared_array;
 class Gzipper : boost::noncopyable
 {
 private:
-	static const unsigned size = 20 * 1024; // 20KB
+	static const unsigned size = 100 * 1024; // 40KB
     
 public:
 	Gzipper(unsigned length=size);

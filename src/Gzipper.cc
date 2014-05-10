@@ -11,7 +11,7 @@ Gzipper::Gzipper(unsigned length):
 			sendingOffset(0),
 			lastChunckSize(0),
 			contentLength(length), 
-			uData(new char[9*length]),
+			uData(new char[15*length]),
 			cData(new char[2*length]),
 			subsFilter(uData.get()) { 
 
@@ -46,17 +46,17 @@ Gzipper::Gzipper(unsigned length):
 }
 
 int Gzipper::addData(const libecap::Area & chunk) {
-	if(!chunk.size)  return 0;
-	
 	lastChunckSize = chunk.size;
+	if(lastChunckSize==0)  return 0;
+	
 	/* 
 	 * stupid implementation of space expand when encounting chunked source.
 	 * simply expand twice the size of the origin space and copy original data.
 	 */
-	if(u_offset+lastChunckSize*9 > 9*contentLength) {
+	if(u_offset+lastChunckSize*15 > 15*contentLength) {
 		Debugger() << "space expand";
 		contentLength *= 2;
-		shared_array<char> temp(new char[9*contentLength]);
+		shared_array<char> temp(new char[15*contentLength]);
 		memcpy(temp.get(), uData.get(), u_offset);
 		uData.swap(temp);
 		temp.reset(new char[2*contentLength]);
@@ -126,7 +126,7 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
     u_strm.next_in = (Bytef*)(data);
     u_strm.avail_in = dlen;
     u_strm.next_out = (Bytef*)(uData.get()+u_offset);
-    u_strm.avail_out = dlen*9;
+    u_strm.avail_out = dlen*15;
 
     int ret = inflate(&u_strm, Z_NO_FLUSH);
     assert(ret != Z_STREAM_ERROR);  /*   state not clobbered */
@@ -139,10 +139,10 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
     }
    
    // Debugger() << std::string(uData.get()+u_offset, 9*dlen - u_strm.avail_out);
-    u_offset += 9*dlen - u_strm.avail_out;
+    u_offset += 15*dlen - u_strm.avail_out;
 	Debugger() << "u_offset = " << u_offset;
 	
-	subsFilter.addContent(9*dlen - u_strm.avail_out);
+	subsFilter.addContent(15*dlen - u_strm.avail_out);
 
     if(ret == Z_STREAM_END)
     {
