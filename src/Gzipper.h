@@ -14,10 +14,12 @@ using boost::shared_array;
 class Gzipper : boost::noncopyable
 {
 private:
-	static const unsigned size = 100 * 1024; // 40KB
+	static const unsigned defaultContentLength = 100 * 1024; // 40KB
+public:
+	static const unsigned inflateUnitSize = 4*1024; //4kB
     
 public:
-	Gzipper(unsigned length=size);
+	Gzipper(unsigned length=defaultContentLength);
 
 	int addData(const libecap::Area &);
 	//int addData(std::string &compressed_data, unsigned dlen);

@@ -138,7 +138,7 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
         return -1;
     }
    
-   // Debugger() << std::string(uData.get()+u_offset, 9*dlen - u_strm.avail_out);
+    Debugger() << std::string(uData.get()+u_offset, 15*dlen - u_strm.avail_out);
     u_offset += 15*dlen - u_strm.avail_out;
 	Debugger() << "u_offset = " << u_offset;
 	

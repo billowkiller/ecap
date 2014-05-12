@@ -144,22 +144,23 @@ void Adapter::Xaction::abContentShift(size_type size) {
 void Adapter::Xaction::noteVbContentDone(bool atEnd) {  
 	Debugger() << "noteVbContentDone";
 	
-// 	const libecap::Area vb = hostx->vbContent(0, libecap::nsize); // get all vb
-// 	Debugger() << "last vb.size" << vb.size;
-// 	if(sp_zipper->addData(vb) < 0) {
-// 		Debugger() << "blockVirgin, abDiscard";
-// 		hostx->blockVirgin();
-// 		abDiscard();
-// 	}
-// 	
-// 	Debugger() << "hostx->vbContentShift: " << sp_zipper->getLastChunckSize();
-//     hostx->vbContentShift(sp_zipper->getLastChunckSize());
-// 
-//     if (sendingAb == opOn)
-//     {
-// 		Debugger() << "noteAbContentAvailable";
-//         hostx->noteAbContentAvailable();
-//     }
+	const libecap::Area vb = hostx->vbContent(0, Gzipper::inflateUnitSize); // get all vb
+	Debugger() << "last vb.size" << vb.size;
+	size += vb.size;
+	if(sp_zipper->addData(vb) < 0) {
+		Debugger() << "blockVirgin, abDiscard";
+		hostx->blockVirgin();
+		abDiscard();
+	}
+	
+	Debugger() << "hostx->vbContentShift: " << sp_zipper->getLastChunckSize();
+    hostx->vbContentShift(sp_zipper->getLastChunckSize());
+
+    if (sendingAb == opOn)
+    {
+		Debugger() << "noteAbContentAvailable";
+        hostx->noteAbContentAvailable();
+    }
     
 	Must(sp_zipper);
 	sp_zipper->Finish_zipper();
@@ -178,15 +179,16 @@ void Adapter::Xaction::noteVbContentAvailable() {
 
 	Debugger() << "noteVbContentAvailable";
     Must(receivingVb == opOn);
-
-	Debugger() << "hostx->vbContent";
-    const libecap::Area vb = hostx->vbContent(0, libecap::nsize); // get all vb
 	
+	Debugger() << "hostx->vbContent";
+    const libecap::Area vb = hostx->vbContent(0, Gzipper::inflateUnitSize); // get all vb
 	Debugger() << "vb.size" << vb.size;
-// 	if(vb.size < 1024) {
-// 		hostx->noteAbContentAvailable();
-// 		return;
-// 	}
+	
+	if(vb.size < Gzipper::inflateUnitSize) {
+		Debugger() << "pass this chunk";
+		return;
+	}
+	
 	if(sp_zipper->addData(vb) < 0) {
 		Debugger() << "blockVirgin, abDiscard";
 		hostx->blockVirgin();
