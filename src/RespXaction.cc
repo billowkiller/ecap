@@ -44,9 +44,6 @@ void Adapter::Xaction::start() {
 	{
 		if(validResponseHeader(adapted))
 		{
-// 			if(content_length)
-// 				sp_zipper.reset(new Gzipper(content_length));
-// 			else
 			shared_ptr<Message> request = hostx->cause().clone();
 			RequestLine *rl = dynamic_cast<RequestLine *>(&request->firstLine());
 			std::string uri = rl->uri().toString();
@@ -61,8 +58,6 @@ void Adapter::Xaction::start() {
 				sp_zipper.reset(new Gzipper()); //chunked encoding, use default content_length
 			
 			Debugger() << "new shared_ptr<Gzipper> ";
-			
-			Debugger() << "headerTransferEncoding: " << fetchHeaderValue(adapted, headerTransferEncoding);
 			
 			hostx->useAdapted(adapted);
 		}
@@ -144,9 +139,8 @@ void Adapter::Xaction::abContentShift(size_type size) {
 void Adapter::Xaction::noteVbContentDone(bool atEnd) {  
 	Debugger() << "noteVbContentDone";
 	
-	const libecap::Area vb = hostx->vbContent(0, Gzipper::inflateUnitSize); // get all vb
+	const libecap::Area vb = hostx->vbContent(0, libecap::nsize); // get all vb
 	Debugger() << "last vb.size" << vb.size;
-	size += vb.size;
 	if(sp_zipper->addData(vb) < 0) {
 		Debugger() << "blockVirgin, abDiscard";
 		hostx->blockVirgin();
@@ -184,7 +178,7 @@ void Adapter::Xaction::noteVbContentAvailable() {
     const libecap::Area vb = hostx->vbContent(0, Gzipper::inflateUnitSize); // get all vb
 	Debugger() << "vb.size" << vb.size;
 	
-	if(vb.size < Gzipper::inflateUnitSize) {
+	if(2*vb.size < Gzipper::inflateUnitSize) {
 		Debugger() << "pass this chunk";
 		return;
 	}

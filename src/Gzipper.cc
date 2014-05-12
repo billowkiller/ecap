@@ -52,6 +52,7 @@ int Gzipper::addData(const libecap::Area & chunk) {
 	/* 
 	 * stupid implementation of space expand when encounting chunked source.
 	 * simply expand twice the size of the origin space and copy original data.
+	 * here has a huge bug, ignore now.
 	 */
 	if(u_offset+lastChunckSize*15 > 15*contentLength) {
 		Debugger() << "space expand";
@@ -63,6 +64,8 @@ int Gzipper::addData(const libecap::Area & chunk) {
 		memcpy(temp.get(), cData.get(), compressedSize);
 		cData.swap(temp);
 	}
+	
+	/* bug need to solve*/
 	
 	if(inflateData(chunk.start, lastChunckSize) == -1) {
 		Debugger() << "inflateData fail";
@@ -91,7 +94,6 @@ void Gzipper::Finish_zipper()
 	Debugger() << "Finish_zipper start";
 	assert(gzipState == opOn);
 	assert(ungzipState == opComplete);
-	assert(subsFilter.finishFilter());
 	
 	c_strm.total_out = 0;
 	int ret = deflate(&c_strm, Z_FINISH);
@@ -137,8 +139,8 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
         ungzipState = opFail;
         return -1;
     }
-   
-    Debugger() << std::string(uData.get()+u_offset, 15*dlen - u_strm.avail_out);
+	
+    //Debugger() << std::string(uData.get()+u_offset, 15*dlen - u_strm.avail_out);
     u_offset += 15*dlen - u_strm.avail_out;
 	Debugger() << "u_offset = " << u_offset;
 	
@@ -150,7 +152,6 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
         ungzipState = opComplete;
 		
 		subsFilter.addContent(0);
-		//Debugger() << "u_offset = " << u_offset;
     }
     
     return ret;
@@ -165,11 +166,15 @@ int Gzipper::deflateData()
 	
 	while(len)
 	{
-		Debugger() << "len: " << len;
 		c_strm.next_in = buf_in;
 		c_strm.avail_in = len;
 	
 		checksum = crc32(checksum, buf_in, len);
+/*		
+		FILE *file;
+		file = fopen("uncompressed", "a");
+		fwrite(buf_in, len, 1, file);
+		fclose(file);*/
 		
 		c_strm.next_out = (Bytef*)(cData.get()+compressedSize);
 		c_strm.avail_out = len;

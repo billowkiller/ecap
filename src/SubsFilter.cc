@@ -68,7 +68,7 @@ void SubsFilter::addContent(unsigned size)
 	 */
 	if(size == 0)
 	{
-		storeSendingData(BufferString(buffer.start, buffer.last-buffer.start));
+		storeSendingData(BufferString(buffer.pos, buffer.last-buffer.pos));
 		buffer.pos = buffer.last;
 	}
 	
