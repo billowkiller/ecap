@@ -23,6 +23,7 @@ Gzipper::Gzipper(unsigned length):
     u_strm.avail_in = 0;
     u_strm.next_in = Z_NULL;
 
+	/* windowBits +16 to decode gzip, zlib 1.2.0.4+ */
     if (inflateInit2(&u_strm, 16+MAX_WBITS) != Z_OK)
         ungzipState = opFail; 
     else
@@ -92,11 +93,12 @@ unsigned Gzipper::getLastChunckSize() {
 void Gzipper::Finish_zipper()
 {
 	Debugger() << "Finish_zipper start";
+	int ret;
 	assert(gzipState == opOn);
 	assert(ungzipState == opComplete);
 	
 	c_strm.total_out = 0;
-	int ret = deflate(&c_strm, Z_FINISH);
+	ret = deflate(&c_strm, Z_FINISH);
 	Debugger() << "ret = " << ret;
 	ret = deflateEnd(&c_strm);
 	Debugger() << "ret = " << ret;
@@ -124,13 +126,18 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
     assert(ungzipState == opOn);
 	
 	Debugger() << "inflateData";
+	int ret;
 
     u_strm.next_in = (Bytef*)(data);
     u_strm.avail_in = dlen;
     u_strm.next_out = (Bytef*)(uData.get()+u_offset);
     u_strm.avail_out = dlen*15;
 
-    int ret = inflate(&u_strm, Z_NO_FLUSH);
+	if(dlen == inflateUnitSize)
+		ret = inflate(&u_strm, Z_NO_FLUSH);
+	else
+		ret = inflate(&u_strm, Z_FINISH);
+	
     assert(ret != Z_STREAM_ERROR);  /*   state not clobbered */
     
     if(ret != Z_OK && ret != Z_STREAM_END && ret != Z_BUF_ERROR)
@@ -140,7 +147,7 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
         return -1;
     }
 	
-    //Debugger() << std::string(uData.get()+u_offset, 15*dlen - u_strm.avail_out);
+   // Debugger() << std::string(uData.get()+u_offset, 15*dlen - u_strm.avail_out);
     u_offset += 15*dlen - u_strm.avail_out;
 	Debugger() << "u_offset = " << u_offset;
 	

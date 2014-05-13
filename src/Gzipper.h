@@ -40,6 +40,7 @@ private:
 	shared_array<char> cData;
 	z_stream u_strm;  //inflate z_stream
 	z_stream c_strm;
+	unsigned u_flush;
 	SubsFilter subsFilter;
 	unsigned checksum;
 	unsigned contentLength;

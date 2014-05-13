@@ -178,7 +178,7 @@ void Adapter::Xaction::noteVbContentAvailable() {
     const libecap::Area vb = hostx->vbContent(0, Gzipper::inflateUnitSize); // get all vb
 	Debugger() << "vb.size" << vb.size;
 	
-	if(2*vb.size < Gzipper::inflateUnitSize) {
+	if(vb.size < Gzipper::inflateUnitSize) {
 		Debugger() << "pass this chunk";
 		return;
 	}
