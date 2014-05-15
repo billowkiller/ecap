@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "RequestHandler.h"
+#include "RuleAccepter.h"
 #include "Debugger.h"
 #include <libecap/common/registry.h>
 #include <libecap/common/errors.h>
@@ -106,7 +107,6 @@ class Xaction: public adapter::Xaction {
 
 } // namespace Adapter
 
-
 std::string Adapter::Service::uri() const {
 	return "ecap://billowkiller.com/request";
 }
@@ -118,7 +118,6 @@ std::string Adapter::Service::tag() const {
 void Adapter::Service::describe(std::ostream &os) const {
 	os << "A request adapter for squid v0.0.0";
 }
-
 void Adapter::Service::configure(const Options &) {
 	// this service is not configurable
 }
@@ -130,6 +129,8 @@ void Adapter::Service::reconfigure(const Options &) {
 void Adapter::Service::start() {
 	adapter::Service::start();
 	// custom code would go here, but this service does not have one
+	Debugger() << "here !!!!!!!!!!!!!!!!";
+	RuleAccepter::startAccept();
 }
 
 void Adapter::Service::stop() {

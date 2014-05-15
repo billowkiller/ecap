@@ -9,15 +9,18 @@ noinst_HEADERS = \
 	Gzipper.h\
 	SubsFilter.h\
 	BufferString.h\
+	RuleHandler.h\
+	RuleAccepter.h\
 	\
 	autoconf.h 
 
 # request
 ecap_request_la_SOURCES = ReqXaction.cc \
-				Debugger.cc
+				Debugger.cc\
+				RuleAccepter.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_request_la_LIBADD= $(LIBECAP_LIBS)
+ecap_request_la_LIBADD= $(LIBECAP_LIBS) -lboost_system -lboost_thread
 
 # response
 ecap_response_la_SOURCES = RespXaction.cc \
@@ -35,4 +38,3 @@ DISTCLEANFILES = \
         autoconf.h
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
-

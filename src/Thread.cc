@@ -18,8 +18,8 @@
 #include "thread.h"
 
 Thread::Thread(const Thread::ThreadFun& threadFun, const string& threadName):
-m_func(threadFun), m_strThreadName(threadName)
-{
+m_func(threadFun), m_strThreadName(threadName) {
+	
 }
 
 int Thread::start()
@@ -30,15 +30,15 @@ int Thread::start()
 
 void* Thread::startThread(void* obj)
 {
-  Thread* thread = static_cast<Thread*>(obj);
-  thread->m_func();
-  return NULL;
+	Thread* thread = static_cast<Thread*>(obj);
+	thread->m_func();
+	return NULL;
 }
 
 pid_t Thread::getThreadId()
 {
     return m_tid;
-};
+}
 
 string  Thread::getThreadName()
 {

@@ -101,7 +101,7 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 ecap_request_la_DEPENDENCIES =
-am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo
+am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo RuleAccepter.lo
 ecap_request_la_OBJECTS = $(am_ecap_request_la_OBJECTS)
 ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -274,16 +274,19 @@ noinst_HEADERS = \
 	Gzipper.h\
 	SubsFilter.h\
 	BufferString.h\
+	RuleHandler.h\
+	RuleAccepter.h\
 	\
 	autoconf.h 
 
 
 # request
 ecap_request_la_SOURCES = ReqXaction.cc \
-				Debugger.cc
+				Debugger.cc\
+				RuleAccepter.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_request_la_LIBADD = $(LIBECAP_LIBS)
+ecap_request_la_LIBADD = $(LIBECAP_LIBS) -lboost_system -lboost_thread
 
 # response
 ecap_response_la_SOURCES = RespXaction.cc \
@@ -397,6 +400,7 @@ include ./$(DEPDIR)/Debugger.Plo
 include ./$(DEPDIR)/Gzipper.Plo
 include ./$(DEPDIR)/ReqXaction.Plo
 include ./$(DEPDIR)/RespXaction.Plo
+include ./$(DEPDIR)/RuleAccepter.Plo
 include ./$(DEPDIR)/Service.Plo
 include ./$(DEPDIR)/SubsFilter.Plo
 

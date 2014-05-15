@@ -9,9 +9,9 @@ class Thread
     typedef boost::function<void()> ThreadFun;
     public:
         Thread(const ThreadFun& threadFun,const string& threadName = string());
-        pid_t &nbsp;&nbsp;&nbsp;&nbsp;getThreadId();
+        pid_t getThreadId();
         string    getThreadName();
-        int &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start();
+        int start();
     
     private:
         static void* startThread(void* thread);
