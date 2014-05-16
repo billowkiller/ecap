@@ -4,7 +4,7 @@
 #include <string>
 #include <boost/data_time/posix_time/posix_time.hpp>
 
-namespace Event {
+namespace EventTimer {
 
 class ConfigEvent {
 	
@@ -26,15 +26,16 @@ protected:
 	func_type delFunction;
 	
 public:
-	ConfigEvent(std::string id);
 	ConfigEvent(std::string id, std::string start_time, std::string end_time);
 	ptime & getCurTime();
 	ptime & getStartTime();
 	ptime & getEndTime();
-	virtual void setAddFunc(func_type addFunc);
-	virtual void setDelFunc(func_type delFunc);
+	virtual void setAddFunc() = 0;
+	virtual void setDelFunc() = 0;
 	
-	friend bool operator<(const ConfigEvent &event1, const ConfigEvent &event2) const;
+	friend bool operator<(const ConfigEvent &event1, const ConfigEvent &event2) const {
+		return event1.getCurTime() < event2.getCurTime();
+	};
 };
 
 class IDConfigEvent : public ConfigEvent {
@@ -45,7 +46,6 @@ private:
 	std::string PZAction;
 
 public:
-	IDConfigEvent(std::string id);
 	IDConfigEvent(std::string id, std::string start_time, std::string end_time);
 	IDConfigEvent(std::string id, std::string start_time, std::string end_time, std::string sid, std::string rid, std::string action);
 	
@@ -54,8 +54,8 @@ public:
 	void setAction(std::string action);
 	void setSOA(std::string sid, std::string rid, std::string action);
 	
-	virtual void setAddFunc(func_type addFunc);
-	virtual void setDelFunc(func_type delFunc);
+	virtual void setAddFunc();
+	virtual void setDelFunc();
 };
 
 class KWConfigEvent : public ConfigEvent {
@@ -64,15 +64,14 @@ private:
 	std::string PZControlContent;
 
 public:
-	KWConfigEvent(std::string id);
 	KWConfigEvent(std::string id, std::string start_time, std::string end_time);
 	KWConfigEvent(std::string id, std::string start_time, std::string end_time, std::string kw);
 	
 	void setKeyword(std::string kw);
 	
-	virtual void setAddFunc(func_type addFunc);
-	virtual void setDelFunc(func_type delFunc);
+	virtual void setAddFunc();
+	virtual void setDelFunc();
 };
 
-} //namespace Event
+} //namespace EventTimer
 #endif
