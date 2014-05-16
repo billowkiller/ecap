@@ -5,7 +5,7 @@
 #include "ConfigEvent.h"
 #include <unistd.h>
 #include <signal.h>
-#include <set>
+#include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/data_time/posix_time/posix_time.hpp>
 
@@ -14,8 +14,8 @@ namespace EventTimer {
 class ConfigTimer {
 
 private:
-	typedef multiset<shared_ptr<ConfigEvent> > EventSet;
-	EventSet configEvent_set;
+	typedef multimap<ptime, shared_ptr<ConfigEvent> > EventMap;
+	EventMap configEvents;
 	
 private:
 	void sig_alrm(int signo);

@@ -9,34 +9,28 @@ namespace Event {
 class ConfigEvent {
 	
 public:	
-	typedef enum {ID, KEYWORD} EVENTTYPE;
+	typedef enum {CONFIGOPEN, CONFIGCLOSE} EVENTSTATUS;
 	std::string configID;
+	EVENTSTATUS event_status;
 	
 protected:
 	typedef boost::function<void()> func_type;
 	
 protected:
 	
-	boost::posix_time::ptime curMeasureTime;
-	boost::posix_time::ptime GK_start_time;
-	boost::posix_time::ptime GK_end_time;
-	
-	EVENTTYPE event_type;
-	
-	/* if event type is ID, then the array means:
-	 * PZUserID, PZResourceID, PZAction.
-	 * else if event type is KEYWORD, then the first
-	 * string has meaning--PZControlContent
-	 */
-// 	std::string GK_string[3];
+	ptime GK_start_time;
+	ptime GK_end_time;
 
 	func_type curFunction;
 	func_type addFunction;
 	func_type delFunction;
 	
 public:
-	ConfigEvent(EVENTTYPE type, configID);
-	ConfigEvent(EVENTTYPE type, configID, std::string start_time, std::string end_time);
+	ConfigEvent(std::string id);
+	ConfigEvent(std::string id, std::string start_time, std::string end_time);
+	ptime & getCurTime();
+	ptime & getStartTime();
+	ptime & getEndTime();
 	virtual void setAddFunc(func_type addFunc);
 	virtual void setDelFunc(func_type delFunc);
 	
@@ -51,10 +45,9 @@ private:
 	std::string PZAction;
 
 public:
-	IDConfigEvent(EVENTTYPE type, configID);
-	IDConfigEvent(EVENTTYPE type, configID, std::string start_time, std::string end_time);
-	IDConfigEvent(EVENTTYPE type, configID, std::string start_time, std::string end_time, 
-					std::string sid, std::string rid, std::string action);
+	IDConfigEvent(std::string id);
+	IDConfigEvent(std::string id, std::string start_time, std::string end_time);
+	IDConfigEvent(std::string id, std::string start_time, std::string end_time, std::string sid, std::string rid, std::string action);
 	
 	void setUserID(std::string id);
 	void setResourceID(std::string id);
@@ -71,9 +64,9 @@ private:
 	std::string PZControlContent;
 
 public:
-	KWConfigEvent(EVENTTYPE type, configID);
-	KWConfigEvent(EVENTTYPE type, configID, std::string start_time, std::string end_time);
-	KWConfigEvent(EVENTTYPE type, configID, std::string start_time, std::string end_time, std::string kw);
+	KWConfigEvent(std::string id);
+	KWConfigEvent(std::string id, std::string start_time, std::string end_time);
+	KWConfigEvent(std::string id, std::string start_time, std::string end_time, std::string kw);
 	
 	void setKeyword(std::string kw);
 	
