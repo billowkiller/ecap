@@ -1,32 +1,44 @@
-#ifndef ECAP_ADAPTER_CONFIGEVENT_H
-#define ECAP_ADAPTER_CONFIGEVENT_H
+#ifndef ECAP_ADAPTER_CONFIGTIMER_H
+#define ECAP_ADAPTER_CONFIGTIMER_H
 
 #include "time_utility.h"
 #include "ConfigEvent.h"
 #include <unistd.h>
 #include <signal.h>
 #include <map>
+#include <stdexcept>
+#include <utility>
 #include <boost/shared_ptr.hpp>
-#include <boost/data_time/posix_time/posix_time.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
+using EventTimer::ConfigEvent;
 namespace EventTimer {
 	
 class ConfigTimer {
 
 private:
-	typedef multimap<ptime, shared_ptr<ConfigEvent> > EventMap;
+	typedef std::multimap<ptime, boost::shared_ptr<ConfigEvent>> EventMap;
 	EventMap configEvents;
 	
 private:
-	void sig_alrm(int signo);
 	void setTimer(int nsecs);
-	void traverse();
+	ConfigTimer();
 	
 public:
-	ConfigTimer();
-	bool addEvent(shared_ptr<ConfigEvent> event);
-	bool delEvent(shared_ptr<ConfigEvent> event);
+	static ConfigTimer& instance() {
+		static ConfigTimer configTimer;
+		return configTimer;
+	}
+	void checkEvent();
+	bool addEvent(boost::shared_ptr<ConfigEvent> &event);
+	bool delEvent(boost::shared_ptr<ConfigEvent> &event);
 };
+
+
+
+void sig_alrm(int signo) {
+	ConfigTimer::instance().checkEvent();	
+}
 
 }
 #endif

@@ -1,42 +1,39 @@
 #ifndef ECAP_ADAPTER_CONFIGEVENT_H
 #define ECAP_ADAPTER_CONFIGEVENT_H
 
+#include "string_utility.h"
 #include <string>
-#include <boost/data_time/posix_time/posix_time.hpp>
+#include <vector>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include<boost/bind.hpp>
 
 namespace EventTimer {
-
-class ConfigEvent {
 	
+class ConfigEvent {
+ 	
 public:	
+	
 	typedef enum {CONFIGOPEN, CONFIGCLOSE} EVENTSTATUS;
 	std::string configID;
 	EVENTSTATUS event_status;
 	
 protected:
-	typedef boost::function<void()> func_type;
 	
-protected:
-	
-	ptime GK_start_time;
-	ptime GK_end_time;
-
-	func_type curFunction;
-	func_type addFunction;
-	func_type delFunction;
+	const boost::posix_time::ptime GK_start_time;
+	const boost::posix_time::ptime GK_end_time;
 	
 public:
 	ConfigEvent(std::string id, std::string start_time, std::string end_time);
-	ptime & getCurTime();
-	ptime & getStartTime();
-	ptime & getEndTime();
-	virtual void setAddFunc() = 0;
-	virtual void setDelFunc() = 0;
+	const boost::posix_time::ptime & getCurTime() const;
+	const boost::posix_time::ptime & getStartTime() const;
+	const boost::posix_time::ptime & getEndTime() const;
+	virtual void triggerFunc() = 0;
 	
-	friend bool operator<(const ConfigEvent &event1, const ConfigEvent &event2) const {
-		return event1.getCurTime() < event2.getCurTime();
+	bool operator<(const ConfigEvent &rhs) {
+		return getCurTime() < rhs.getCurTime();
 	};
 };
+
 
 class IDConfigEvent : public ConfigEvent {
 
@@ -54,23 +51,23 @@ public:
 	void setAction(std::string action);
 	void setSOA(std::string sid, std::string rid, std::string action);
 	
-	virtual void setAddFunc();
-	virtual void setDelFunc();
+	virtual void triggerFunc();
 };
 
 class KWConfigEvent : public ConfigEvent {
 
 private:
-	std::string PZControlContent;
+	std::vector<std::string> PZControlContents;
 
 public:
 	KWConfigEvent(std::string id, std::string start_time, std::string end_time);
 	KWConfigEvent(std::string id, std::string start_time, std::string end_time, std::string kw);
+	KWConfigEvent(std::string id, std::string start_time, std::string end_time, std::vector<std::string> kws);
 	
-	void setKeyword(std::string kw);
+	void addKeyword(std::string kw);
+	void addKeywords(std::vector<std::string> kws);
 	
-	virtual void setAddFunc();
-	virtual void setDelFunc();
+	virtual void triggerFunc();
 };
 
 } //namespace EventTimer

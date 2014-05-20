@@ -2,26 +2,26 @@
 
 /* define ConfigEvent */
 
-ConfigEvent::ConfigEvent(std::string id, std::string start_time, std::string end_time):
+EventTimer::ConfigEvent::ConfigEvent(std::string id, std::string start_time, std::string end_time):
 configID(id),
 event_status(CONFIGCLOSE),
-GK_start_time(time_from_string(start_time)),
-GK_end_time(time_from_string(end_time)){
+GK_start_time(boost::posix_time::time_from_string(start_time)),
+GK_end_time(boost::posix_time::time_from_string(end_time)){
 	
 }
 
-ptime & ConfigEvent::getCurTime() {
+const boost::posix_time::ptime & EventTimer::ConfigEvent::getCurTime() const {
 	if(event_status == CONFIGCLOSE)
 		return GK_start_time;
 	else
 		return GK_end_time;
 }
 
-ptime & ConfigEvent::getStartTime() {
+const boost::posix_time::ptime & EventTimer::ConfigEvent::getStartTime() const {
 	return GK_start_time;
 }
 
-ptime & ConfigEvent::getEndTime() {
+const boost::posix_time::ptime & EventTimer::ConfigEvent::getEndTime() const {
 	return GK_end_time;
 }
 
@@ -30,37 +30,43 @@ ptime & ConfigEvent::getEndTime() {
 
 /* define IDConfigEvent */
 
-IDConfigEvent(std::string id, std::string start_time, std::string end_time, std::string sid, std::string rid, std::string action):
-ConfigEvent(id, start_time, end_time), PZUserID(sid), PZResourceID(rid), PZAction(action){
-	//default addFuction and delFunction
+EventTimer::IDConfigEvent::IDConfigEvent(std::string id, std::string start_time, std::string end_time, std::string sid, std::string rid, std::string action):
+EventTimer::ConfigEvent(id, start_time, end_time), PZUserID(sid), PZResourceID(rid), PZAction(action){
 }
 
-IDConfigEvent::IDConfigEvent(std::string id, std::string start_time, std::string end_time):IDConfigEvent(id, start_time, end_time, "", "", "") {
+EventTimer::IDConfigEvent::IDConfigEvent(std::string id, std::string start_time, std::string end_time):IDConfigEvent(id, start_time, end_time, "", "", "") {
 	
 }
 
-void IDConfigEvent::setUserID(std::string id) {
+void EventTimer::IDConfigEvent::setUserID(std::string id) {
 	PZUserID = id;
 }
 
-void IDConfigEvent::setResourceID(std::string id) {
+void EventTimer::IDConfigEvent::setResourceID(std::string id) {
 	PZResourceID = id;
 }
 
-void IDConfigEvent::setAction(std::string id) {
+void EventTimer::IDConfigEvent::setAction(std::string id) {
 	PZAction = id;
 }
 
-void IDConfigEvent::setSOA(std::string sid, std::string rid, std::string action) {
+void EventTimer::IDConfigEvent::setSOA(std::string sid, std::string rid, std::string action) {
 	PZUserID = sid;
 	PZResourceID = rid;
 	PZAction = action;
 }
 
-void IDConfigEvent::setAddFunc() {
-}
-
-void IDConfigEvent::setDelFunc() {
+void EventTimer::IDConfigEvent::triggerFunc() {
+	if(event_status == CONFIGCLOSE) {
+		boost::bind(EventTimer::IDAddFunc, _1, _2, _3)
+				(PZUserID, PZResourceID, PZAction);
+		event_status = CONFIGOPEN;
+	}
+	else {
+		boost::bind(EventTimer::IDDelFunc, _1, _2, _3)
+				(PZUserID, PZResourceID, PZAction);
+		event_status = CONFIGCLOSE;
+	}
 }
 
 /* end */
@@ -68,22 +74,32 @@ void IDConfigEvent::setDelFunc() {
 
 /* define KWConfigEvent */
 
-KWConfigEvent(std::string id, std::string start_time, std::string end_time, std::string kw):
-ConfigEvent(id, start_time, end_time), PZControlContent(kw){
-	//default addFuction and delFunction
+EventTimer::KWConfigEvent::KWConfigEvent(std::string id, std::string start_time, std::string end_time, std::string kw):EventTimer::ConfigEvent(id, start_time, end_time){
+	
+	PZControlContents.push_back(kw);
 }
 
-KWConfigEvent::KWConfigEvent(std::string id, std::string start_time, std::string end_time):IDConfigEvent(id, start_time, end_time, "") {
+EventTimer::KWConfigEvent::KWConfigEvent(std::string id, std::string start_time, std::string end_time):ConfigEvent(id, start_time, end_time) {
 	
 }
 
-void KWConfigEvent::setKeyword(std::string kw) {
-	PZControlContent = kw;
-}
-void KWConfigEvent::setAddFunc() {
+void EventTimer::KWConfigEvent::addKeyword(std::string kw) {
+	PZControlContents.push_back(kw);
 }
 
-void KWConfigEvent::setDelFunc() {
+void EventTimer::KWConfigEvent::addKeywords(std::vector<std::string> kws) {
+	PZControlContents.insert(PZControlContents.end()-1, kws.begin(), kws.end());
+}
+
+void EventTimer::KWConfigEvent::triggerFunc() {
+	if(event_status == CONFIGCLOSE) {
+		boost::bind(EventTimer::kwsAddFunc, _1)(PZControlContents);
+		event_status = CONFIGOPEN;
+	}
+	else {
+		boost::bind(EventTimer::kwsDelFunc, _1)(PZControlContents);
+		event_status = CONFIGOPEN;
+	}
 }
 
 /* end */
