@@ -1,5 +1,5 @@
 #include "ConfigEvent.h"
-
+#include "StrMatcher.h"
 /* define ConfigEvent */
 
 EventTimer::ConfigEvent::ConfigEvent(std::string id, std::string start_time, std::string end_time):
@@ -58,12 +58,12 @@ void EventTimer::IDConfigEvent::setSOA(std::string sid, std::string rid, std::st
 
 void EventTimer::IDConfigEvent::triggerFunc() {
 	if(event_status == CONFIGCLOSE) {
-		boost::bind(EventTimer::IDAddFunc, _1, _2, _3)
+		boost::bind(&EventTimer::StrMatcher::IDAddFunc, _1, _2, _3)
 				(PZUserID, PZResourceID, PZAction);
 		event_status = CONFIGOPEN;
 	}
 	else {
-		boost::bind(EventTimer::IDDelFunc, _1, _2, _3)
+		boost::bind(&EventTimer::StrMatcher::IDDelFunc, _1, _2, _3)
 				(PZUserID, PZResourceID, PZAction);
 		event_status = CONFIGCLOSE;
 	}
@@ -93,11 +93,11 @@ void EventTimer::KWConfigEvent::addKeywords(std::vector<std::string> kws) {
 
 void EventTimer::KWConfigEvent::triggerFunc() {
 	if(event_status == CONFIGCLOSE) {
-		boost::bind(EventTimer::kwsAddFunc, _1)(PZControlContents);
+		boost::bind(&EventTimer::StrMatcher::kwsAddFunc, _1)(PZControlContents);
 		event_status = CONFIGOPEN;
 	}
 	else {
-		boost::bind(EventTimer::kwsDelFunc, _1)(PZControlContents);
+		boost::bind(&EventTimer::StrMatcher::kwsDelFunc, _1)(PZControlContents);
 		event_status = CONFIGOPEN;
 	}
 }

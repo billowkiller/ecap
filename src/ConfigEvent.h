@@ -1,7 +1,6 @@
 #ifndef ECAP_ADAPTER_CONFIGEVENT_H
 #define ECAP_ADAPTER_CONFIGEVENT_H
 
-#include "string_utility.h"
 #include <string>
 #include <vector>
 #include <boost/date_time/posix_time/posix_time.hpp>

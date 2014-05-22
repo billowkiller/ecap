@@ -1,7 +1,6 @@
 #ifndef ECAP_ADAPTER_CONFIGTIMER_H
 #define ECAP_ADAPTER_CONFIGTIMER_H
 
-#include "time_utility.h"
 #include "ConfigEvent.h"
 #include <unistd.h>
 #include <signal.h>
@@ -12,8 +11,10 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 using EventTimer::ConfigEvent;
+using namespace boost::posix_time;
+
 namespace EventTimer {
-	
+
 class ConfigTimer {
 
 private:
@@ -21,24 +22,24 @@ private:
 	EventMap configEvents;
 	
 private:
+	void sig_alrm(int signo) {
+		ConfigTimer::instance().checkEvent();	
+	}
 	void setTimer(int nsecs);
 	ConfigTimer();
 	
 public:
-	static ConfigTimer& instance() {
-		static ConfigTimer configTimer;
-		return configTimer;
-	}
+	static ConfigTimer& instance();
 	void checkEvent();
 	bool addEvent(boost::shared_ptr<ConfigEvent> &event);
 	bool delEvent(boost::shared_ptr<ConfigEvent> &event);
+	
+	static boost::shared_ptr<ptime> curtime();
+	
+	static int seconds_gap(boost::shared_ptr<ptime> time1, boost::shared_ptr<ptime> time2);
+	
+	static int expected_seconds(boost::shared_ptr<ptime> time);
 };
-
-
-
-void sig_alrm(int signo) {
-	ConfigTimer::instance().checkEvent();	
-}
 
 }
 #endif

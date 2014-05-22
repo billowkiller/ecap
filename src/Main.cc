@@ -24,7 +24,9 @@
 using namespace std;
 
 int main() {
-    string start_time("04:00:00");
-
-    KWConfigEvent kwevent()
+    string configID("0000001");
+    string start_time("2014-05-22 17:01:01");
+    string end_time("2014-05-22 17:05:01");
+    EventTimer::KWConfigEvent event(configID, start_time, end_time, "keyword");
+    cout << event.getCurTime() << endl;
 }
