@@ -1,9 +1,9 @@
 /*
  * =====================================================================================
  *
- *       Filename:  test.cc
+ *       Filename:  Timer.h
  *
- *    Description:  
+ *    Description:  Abandon!!!
  *
  *        Version:  1.0
  *        Created:  05/22/2014 03:04:31 PM
@@ -26,6 +26,7 @@
 namespace EventTimer {
 	
 	class Timer {
+		
 	public:
 		template <class callable, class... arguments>
 		Timer(int after, bool async, callable&& f, arguments&&... args)

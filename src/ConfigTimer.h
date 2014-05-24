@@ -2,11 +2,10 @@
 #define ECAP_ADAPTER_CONFIGTIMER_H
 
 #include "ConfigEvent.h"
-#include <unistd.h>
+#include <time.h>
 #include <signal.h>
+#include <unistd.h>
 #include <map>
-#include <stdexcept>
-#include <utility>
 #include <boost/shared_ptr.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -21,25 +20,22 @@ private:
 	typedef std::multimap<ptime, boost::shared_ptr<ConfigEvent>> EventMap;
 	EventMap configEvents;
 	
+	struct sigevent evp;
+	struct itimerspec ts;
+	timer_t timer;
+	
 private:
-	void sig_alrm(int signo) {
-		ConfigTimer::instance().checkEvent();	
-	}
-	void setTimer(int nsecs);
 	ConfigTimer();
+	void _update_timer();
+	void _set_timer(int);
 	
 public:
 	static ConfigTimer& instance();
 	void checkEvent();
-	bool addEvent(boost::shared_ptr<ConfigEvent> &event);
-	bool delEvent(boost::shared_ptr<ConfigEvent> &event);
-	
-	static boost::shared_ptr<ptime> curtime();
-	
-	static int seconds_gap(boost::shared_ptr<ptime> time1, boost::shared_ptr<ptime> time2);
-	
-	static int expected_seconds(boost::shared_ptr<ptime> time);
+	bool addConfig(boost::shared_ptr<ConfigEvent> &event);
+	bool delConfig(boost::shared_ptr<ConfigEvent> &event);
 };
 
+void handle(union sigval v);
 }
 #endif

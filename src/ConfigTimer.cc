@@ -1,9 +1,15 @@
 #include "ConfigTimer.h"
-#include "Timer.h"
-#include <functional>
+#include "time_utility.h"
+#include <assert.h>
 
 EventTimer::ConfigTimer::ConfigTimer() {
+	evp.sigev_value.sival_ptr = &timer;
+	evp.sigev_notify = SIGEV_THREAD;
+	evp.sigev_notify_function = handle;
+	evp.sigev_value.sival_int = 3;
 	
+	int ret = timer_create(CLOCK_REALTIME, &evp, &timer);
+	assert(!ret);
 }
 
 EventTimer::ConfigTimer& EventTimer::ConfigTimer::instance(){
@@ -11,8 +17,12 @@ EventTimer::ConfigTimer& EventTimer::ConfigTimer::instance(){
 		return configTimer;
 }
 
+void EventTimer::handle(union sigval v) {
+	EventTimer::ConfigTimer::instance().checkEvent();
+}
+
 void EventTimer::ConfigTimer::checkEvent() {
-	ptime * ctime = curtime().get();
+	boost::shared_ptr<ptime> ctime = curtime();
 	
 	for(EventMap::iterator it = configEvents.begin(); it!=configEvents.end();) {
 		
@@ -21,25 +31,42 @@ void EventTimer::ConfigTimer::checkEvent() {
 			event->triggerFunc();
 			configEvents.erase(it++);
 			if(event->event_status == ConfigEvent::CONFIGOPEN)
-				addEvent(event);
+				addConfig(event);
 		} else
 			break;
 	}
+	_update_timer();
 }
 
-void EventTimer::ConfigTimer::setTimer(int nsecs) {
-	
-	std::function<void()> func = std::bind(&EventTimer::ConfigTimer::checkEvent, &EventTimer::ConfigTimer::instance()); 
-	
-	//async
-	Timer timer(nsecs, true , func);
+void
+EventTimer::ConfigTimer::_update_timer(){
+	int secs = expected_seconds(configEvents.begin()->first);
+	_set_timer(secs);
 }
 
-bool EventTimer::ConfigTimer::addEvent(boost::shared_ptr<ConfigEvent> &event) {
+void
+EventTimer::ConfigTimer::_set_timer(int sec) {
+	
+	struct itimerspec ts;
+	ts.it_interval.tv_sec = 0;
+	ts.it_interval.tv_nsec = 0;
+	ts.it_value.tv_sec = sec;
+	ts.it_value.tv_nsec = 0;
+	
+	int ret = timer_settime (timer, 0, &ts, NULL);
+	assert(!ret);
+}
+
+bool EventTimer::ConfigTimer::addConfig(boost::shared_ptr<ConfigEvent> &event) {
+	
+	if(event->getCurTime() < configEvents.begin()->first){
+		_set_timer(expected_seconds(event->getCurTime()));
+	}
+	
 	configEvents.insert(std::make_pair(ptime(event->getCurTime()), event));
 }
 
-bool EventTimer::ConfigTimer::delEvent(boost::shared_ptr<ConfigEvent> &event) {
+bool EventTimer::ConfigTimer::delConfig(boost::shared_ptr<ConfigEvent> &event) {
 	std::pair<EventMap::iterator, EventMap::iterator> p = configEvents.equal_range(event->getStartTime());
 	
 	/* if the config has not taken effect */
@@ -60,17 +87,4 @@ bool EventTimer::ConfigTimer::delEvent(boost::shared_ptr<ConfigEvent> &event) {
 	}
 	
 	return false;
-}
-
-boost::shared_ptr<ptime> curtime() {
-	return boost::shared_ptr<ptime>(new ptime(second_clock::local_time()));
-}
-
-int seconds_gap(boost::shared_ptr<ptime> time1, boost::shared_ptr<ptime> time2) {
-	time_duration gap = (*time1)-(*time2);
-	return gap.total_seconds();
-}
-
-int expected_seconds(boost::shared_ptr<ptime> time) {
-	return seconds_gap(time, curtime());
 }
