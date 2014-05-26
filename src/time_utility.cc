@@ -29,6 +29,6 @@ bool EventTimer::addEvent(boost::shared_ptr<ConfigEvent> event)
 {
 	ConfigTimer &timer = ConfigTimer::instance();
 	int num = timer.getEventsNum();
-	EventTimer::ConfigTimer::instance().addConfig(event);
+	ConfigTimer::instance().addConfig(event);
 	return num+1 == timer.getEventsNum();
 }
