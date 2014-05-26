@@ -18,6 +18,13 @@ int EventTimer::expected_seconds(const ptime &time) {
 	return expected_seconds(&time);
 }
 
+std::string EventTimer::make_time(int secs) {
+	boost::shared_ptr<time_duration> t(new time_duration(0,0,secs,0));
+	boost::shared_ptr<ptime> time = EventTimer::curtime();
+	*time += *t;
+	return to_simple_string(*time);
+}
+
 bool EventTimer::addEvent(boost::shared_ptr<ConfigEvent> event)
 {
 	ConfigTimer &timer = ConfigTimer::instance();

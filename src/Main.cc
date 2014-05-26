@@ -25,9 +25,9 @@
 using namespace std;
 
 int main() {
-    boost::shared_ptr<ConfigEvent> event1(new EventTimer::KWConfigEvent(string("1414141"), string("2014-05-26 15:14:01"), string("2014-05-26 15:14:12"), "keyword1"));
-    boost::shared_ptr<ConfigEvent> event2(new EventTimer::KWConfigEvent(string("1414142"), string("2014-05-26 15:14:05"), string("2014-05-26 15:14:10"), "keyword2"));
-	boost::shared_ptr<ConfigEvent> event3(new EventTimer::KWConfigEvent(string("1414142"), string("2014-05-26 15:14:05"), string("2014-05-26 15:14:15"), "keyword3"));
+    boost::shared_ptr<ConfigEvent> event1(new EventTimer::KWConfigEvent(string("1414141"), EventTimer::make_time(3), EventTimer::make_time(15), "keyword1"));
+    boost::shared_ptr<ConfigEvent> event2(new EventTimer::KWConfigEvent(string("1414142"), EventTimer::make_time(6), EventTimer::make_time(9), "keyword2"));
+	boost::shared_ptr<ConfigEvent> event3(new EventTimer::KWConfigEvent(string("1414142"), EventTimer::make_time(6), EventTimer::make_time(18), "keyword3"));
 	EventTimer::addEvent(event1);
 	EventTimer::addEvent(event2);
 	EventTimer::addEvent(event3);
