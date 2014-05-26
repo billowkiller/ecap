@@ -1,3 +1,24 @@
+/*
+ * =====================================================================================
+ *
+ *       Filename:  Thread.h
+ *
+ *    Description:  Abandon!!!
+ *
+ *        Version:  1.0
+ *        Created:  05/22/2014 03:04:31 PM
+ *       Revision:  none
+ *       Compiler:  gcc
+ *
+ *         Author:  billowkiller (), billowkiller@gmail.com
+ *   Organization:  
+ *
+ * =====================================================================================
+ */
+
+#ifndef ECAP_ADAPTER_STRMATCHER_H
+#define ECAP_ADAPTER_STRMATCHER_H
+
 #include <pthread.h>
 #include <string>
 #include <boost/function.hpp>
@@ -22,3 +43,5 @@ class Thread
         string      m_strThreadName;
         ThreadFun   m_func;
 };
+
+#endif

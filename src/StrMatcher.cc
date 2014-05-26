@@ -1,17 +1,20 @@
 #include "StrMatcher.h"
+#include <cstdio>
+
+using namespace std;
 
 void EventTimer::StrMatcher::kwsAddFunc(std::vector<std::string> &keyword) {
-		std::cout << "kwsAddFunc" << std::endl;
+	printf("kwsAddFunc\n");
 }
 
 void EventTimer::StrMatcher::kwsDelFunc(std::vector<std::string> &keyword) {
-	std::cout << "kwsDelFunc" << std::endl;
+	printf("kwsDelFunc, %s\n", keyword[0].c_str());
 }
 
 void EventTimer::StrMatcher::IDAddFunc(std::string &sid, std::string &rid, std::string &action) {
-	std::cout << "IDAddFunc" << std::endl;
+	printf("IDAddFunc\n");
 }
 
 void EventTimer::StrMatcher::IDDelFunc(std::string &sid, std::string &rid, std::string &action) {
-	std::cout << "IDDelFunc" << std::endl;
+	printf("IDDelFunc\n");
 }

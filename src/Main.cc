@@ -18,15 +18,18 @@
 
 #include "ConfigEvent.h"
 #include "ConfigTimer.h"
+#include "time_utility.h"
 #include <iostream>
 #include <string>
 
 using namespace std;
 
 int main() {
-    string configID("0000001");
-    string start_time("2014-05-22 17:01:01");
-    string end_time("2014-05-22 17:05:01");
-    EventTimer::KWConfigEvent event(configID, start_time, end_time, "keyword");
-    cout << event.getCurTime() << endl;
+    boost::shared_ptr<ConfigEvent> event1(new EventTimer::KWConfigEvent(string("1414141"), string("2014-05-26 15:14:01"), string("2014-05-26 15:14:12"), "keyword1"));
+    boost::shared_ptr<ConfigEvent> event2(new EventTimer::KWConfigEvent(string("1414142"), string("2014-05-26 15:14:05"), string("2014-05-26 15:14:10"), "keyword2"));
+	boost::shared_ptr<ConfigEvent> event3(new EventTimer::KWConfigEvent(string("1414142"), string("2014-05-26 15:14:05"), string("2014-05-26 15:14:15"), "keyword3"));
+	EventTimer::addEvent(event1);
+	EventTimer::addEvent(event2);
+	EventTimer::addEvent(event3);
+	while(1);
 }

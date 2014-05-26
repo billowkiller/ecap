@@ -30,10 +30,11 @@ private:
 	void _set_timer(int);
 	
 public:
-	static ConfigTimer& instance();
 	void checkEvent();
-	bool addConfig(boost::shared_ptr<ConfigEvent> &event);
-	bool delConfig(boost::shared_ptr<ConfigEvent> &event);
+	static ConfigTimer& instance();
+	void addConfig(boost::shared_ptr<ConfigEvent> event);
+	bool delConfig(boost::shared_ptr<ConfigEvent> event);
+	int getEventsNum();
 };
 
 void handle(union sigval v);

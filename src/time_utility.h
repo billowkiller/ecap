@@ -8,10 +8,14 @@ using namespace boost::posix_time;
 
 namespace EventTimer {
 
+	class ConfigEvent;
+	
 	boost::shared_ptr<ptime> curtime();
 	int seconds_gap(const ptime *time1,const ptime *time2);
 	int expected_seconds(const ptime *time);
 	int expected_seconds(const ptime &time);
+	
+	bool addEvent(boost::shared_ptr<ConfigEvent> event);
 }
 
 #endif

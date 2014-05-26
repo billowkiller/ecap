@@ -1,6 +1,8 @@
 #include "ConfigTimer.h"
 #include "time_utility.h"
 #include <assert.h>
+#include <cstdio>
+#include <iostream>
 
 EventTimer::ConfigTimer::ConfigTimer() {
 	evp.sigev_value.sival_ptr = &timer;
@@ -21,6 +23,10 @@ void EventTimer::handle(union sigval v) {
 	EventTimer::ConfigTimer::instance().checkEvent();
 }
 
+/* 
+ * check every event and trigger corresponding function. 
+ * if added, erase the event and reinsert into rbtree.
+ */
 void EventTimer::ConfigTimer::checkEvent() {
 	boost::shared_ptr<ptime> ctime = curtime();
 	
@@ -40,7 +46,11 @@ void EventTimer::ConfigTimer::checkEvent() {
 
 void
 EventTimer::ConfigTimer::_update_timer(){
-	int secs = expected_seconds(configEvents.begin()->first);
+	int secs = 0;
+	if(getEventsNum()) {
+		std::cout << configEvents.begin()->first << std::endl;
+		secs = expected_seconds(configEvents.begin()->first);
+	}
 	_set_timer(secs);
 }
 
@@ -55,18 +65,31 @@ EventTimer::ConfigTimer::_set_timer(int sec) {
 	
 	int ret = timer_settime (timer, 0, &ts, NULL);
 	assert(!ret);
+	
+	timer_gettime(timer, &ts);
+	printf("last alarm %ld secs, %ld nsecs\n", ts.it_value.tv_sec, ts.it_value.tv_nsec);
 }
 
-bool EventTimer::ConfigTimer::addConfig(boost::shared_ptr<ConfigEvent> &event) {
+void EventTimer::ConfigTimer::addConfig(boost::shared_ptr<ConfigEvent> event) {
 	
-	if(event->getCurTime() < configEvents.begin()->first){
+	/* for dislocation of config time */
+	boost::shared_ptr<ptime> ctime = curtime();
+	if(event->getStartTime() < *ctime) {
+		if(event->getEndTime() < *ctime)
+			return;
+		else 
+			event->triggerFunc();
+	}
+	/* end */
+	
+	if(getEventsNum()==0 || event->getCurTime() < configEvents.begin()->first){
 		_set_timer(expected_seconds(event->getCurTime()));
 	}
 	
 	configEvents.insert(std::make_pair(ptime(event->getCurTime()), event));
 }
 
-bool EventTimer::ConfigTimer::delConfig(boost::shared_ptr<ConfigEvent> &event) {
+bool EventTimer::ConfigTimer::delConfig(boost::shared_ptr<ConfigEvent> event) {
 	std::pair<EventMap::iterator, EventMap::iterator> p = configEvents.equal_range(event->getStartTime());
 	
 	/* if the config has not taken effect */
@@ -87,4 +110,8 @@ bool EventTimer::ConfigTimer::delConfig(boost::shared_ptr<ConfigEvent> &event) {
 	}
 	
 	return false;
+}
+
+int EventTimer::ConfigTimer::getEventsNum() {
+	return configEvents.size();
 }

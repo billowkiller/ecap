@@ -98,7 +98,7 @@ void EventTimer::KWConfigEvent::triggerFunc() {
 	}
 	else {
 		boost::bind(&EventTimer::StrMatcher::kwsDelFunc, _1)(PZControlContents);
-		event_status = CONFIGOPEN;
+		event_status = CONFIGCLOSE;
 	}
 }
 

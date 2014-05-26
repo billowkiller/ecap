@@ -1,4 +1,5 @@
 #include "time_utility.h"
+#include "ConfigTimer.h"
 
 boost::shared_ptr<ptime> EventTimer::curtime() {
 	return boost::shared_ptr<ptime>(new ptime(second_clock::local_time()));
@@ -15,4 +16,12 @@ int EventTimer::expected_seconds(const ptime *time) {
 
 int EventTimer::expected_seconds(const ptime &time) {
 	return expected_seconds(&time);
+}
+
+bool EventTimer::addEvent(boost::shared_ptr<ConfigEvent> event)
+{
+	ConfigTimer &timer = ConfigTimer::instance();
+	int num = timer.getEventsNum();
+	EventTimer::ConfigTimer::instance().addConfig(event);
+	return num+1 == timer.getEventsNum();
 }
