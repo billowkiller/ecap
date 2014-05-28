@@ -13,20 +13,18 @@ using boost::shared_array;
 
 class Gzipper : boost::noncopyable
 {
-private:
-	static const unsigned defaultContentLength = 100 * 1024; // 40KB
 public:
-	static const unsigned inflateUnitSize = 4*1024; //4kB
+	static const unsigned deflateUnitSize = 2*1024; //2kB
+	static const unsigned inflateUnitSize = 20*1024; //20kB
     
 public:
-	Gzipper(unsigned length=defaultContentLength);
+	Gzipper();
 
 	int addData(const libecap::Area &);
-	//int addData(std::string &compressed_data, unsigned dlen);
-	unsigned sendingOffset; //for compressed data
-	unsigned compressedSize; 
 	
 	char* getCData(int offset);
+	unsigned getCSize();
+	void ShiftSize(unsigned size);
 	unsigned getLastChunckSize();
 	void Finish_zipper();
 	
@@ -35,20 +33,18 @@ private:
 	typedef enum { opOn, opComplete, opFail} OperationState;
 	OperationState ungzipState;
 	OperationState gzipState;
-	unsigned u_offset; //uncompressed data offset
-	shared_array<char> uData;
-	shared_array<char> cData;
+	InflateAlloc inflate_pool;
+	DeflateAlloc deflate_pool;
+	Unit inflateTransfor;
 	z_stream u_strm;  //inflate z_stream
 	z_stream c_strm;
-	unsigned u_flush;
-	SubsFilter subsFilter;
 	unsigned checksum;
-	unsigned contentLength;
 	unsigned lastChunckSize;  //record addData size
 	const static  u_char  gzheader[10];
 
 	int inflateData(const char *, unsigned);
 	int deflateData();
+	
 		
 };
 

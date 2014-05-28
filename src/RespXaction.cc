@@ -118,22 +118,19 @@ Area Adapter::Xaction::abContent(size_type offset, size_type size) {
     if (sendingAb == opComplete) {
         return libecap::Area::FromTempString("");
     }
-    
-	offset = sp_zipper->sendingOffset + offset;
-	size = sp_zipper->compressedSize - offset;
-	Debugger() << "compressedSize: " << sp_zipper->compressedSize;
 	
-	return Area::FromTempBuffer((const char*)(sp_zipper->getCData(offset)), size);
+	return Area::FromTempBuffer(sp_zipper->getCData(), sp_zipper->getCSize());
 }
 
 void Adapter::Xaction::abContentShift(size_type size) {
 	Debugger() << "abContentShift";
     Must(sendingAb == opOn || sendingAb == opComplete);
 	
-	sp_zipper->sendingOffset += size;
+	sp_zipper->ShiftSize(size);
 	Debugger() << "sp_zipper->sendingOffset: " << sp_zipper->sendingOffset;
 	
-	
+	if(sp_zipper->getCSize())
+		hostx->noteAbContentAvailable();
 }
 
 void Adapter::Xaction::noteVbContentDone(bool atEnd) {  
