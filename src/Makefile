@@ -56,7 +56,9 @@ subdir = src
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/autoconf.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/cfgaux/libtool.m4 \
+am__aclocal_m4_deps =  \
+	$(top_srcdir)/cfgaux/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/cfgaux/libtool.m4 \
 	$(top_srcdir)/cfgaux/ltoptions.m4 \
 	$(top_srcdir)/cfgaux/ltsugar.m4 \
 	$(top_srcdir)/cfgaux/ltversion.m4 \
@@ -108,7 +110,7 @@ ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(ecap_request_la_LDFLAGS) $(LDFLAGS) -o $@
 ecap_response_la_DEPENDENCIES =
 am_ecap_response_la_OBJECTS = RespXaction.lo Service.lo Debugger.lo \
-	Gzipper.lo SubsFilter.lo
+	Gzipper.lo MemAlloc.lo LineSubsFilter.lo
 ecap_response_la_OBJECTS = $(am_ecap_response_la_OBJECTS)
 ecap_response_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -153,7 +155,7 @@ CPPFLAGS =
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe
+CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe -std=gnu++11
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -167,6 +169,7 @@ EGREP = /bin/grep -E
 EXEEXT = 
 FGREP = /bin/grep -F
 GREP = /bin/grep
+HAVE_CXX11 = 
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -273,9 +276,11 @@ noinst_HEADERS = \
 	Debugger.h\
 	Gzipper.h\
 	SubsFilter.h\
+	LineSubsFilter.h\
 	BufferString.h\
 	RuleHandler.h\
 	RuleAccepter.h\
+	MemAlloc.h\
 	\
 	autoconf.h 
 
@@ -293,7 +298,8 @@ ecap_response_la_SOURCES = RespXaction.cc \
 	Service.cc \
 	Debugger.cc \
 	Gzipper.cc \
-	SubsFilter.cc 
+	MemAlloc.cc \
+	LineSubsFilter.cc 
 
 ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
 ecap_response_la_LIBADD = $(LIBECAP_LIBS) -lz -lboost_system
@@ -398,11 +404,12 @@ distclean-compile:
 
 include ./$(DEPDIR)/Debugger.Plo
 include ./$(DEPDIR)/Gzipper.Plo
+include ./$(DEPDIR)/LineSubsFilter.Plo
+include ./$(DEPDIR)/MemAlloc.Plo
 include ./$(DEPDIR)/ReqXaction.Plo
 include ./$(DEPDIR)/RespXaction.Plo
 include ./$(DEPDIR)/RuleAccepter.Plo
 include ./$(DEPDIR)/Service.Plo
-include ./$(DEPDIR)/SubsFilter.Plo
 
 .cc.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

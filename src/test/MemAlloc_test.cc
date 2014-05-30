@@ -1,4 +1,5 @@
 #include "../MemAlloc.h"
+#include "../LineSubsFilter.h"
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -7,8 +8,10 @@
 #include <fstream>
 using namespace std;
 
-InflateAlloc inflate_pool(20*1024, NULL);
+LineSubsFilter subsfilter;
+InflateAlloc inflate_pool(20*1024, &subsfilter);
 DeflateAlloc deflate_pool(2*1024);
+
 unsigned checksum=0;
 unsigned u_offset = 0;
 unsigned c_offset = 0;
@@ -160,7 +163,7 @@ int main()
 {
 	ofstream ofs("compressed", ios::out);
     long length=0, offset=0;
-    char *file = fileRead("login_page_c", &length);
+    char *file = fileRead("David_page_c", &length);
 
     z_stream strm;
     inflate_init(&strm);
@@ -183,7 +186,6 @@ int main()
 		unsigned rsize;
 		char * rpointer = deflate_pool.getReadPointer(rsize);
 		while(rsize) {
-			printf("rpointer = %X, rsize = %d\n",rpointer, rsize);
 			ofs << string(rpointer, rsize);
 			c_offset += rsize;
 			deflate_pool.ShiftSize(rsize);
@@ -195,6 +197,7 @@ int main()
 	
 	printf("c_offset = %d\n", c_offset);
  	printf("compressed = %d\n", compressedSize);
+	printf("u_offset = %d\n", u_offset);
  	printf("uncompressed = %d\n", uncompressed);
 	ofs.close();
 	return 0;

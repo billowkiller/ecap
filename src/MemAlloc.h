@@ -31,7 +31,7 @@ protected:
 	
 protected:
 	const int UNITNUMBER = 4;
-	const int TRANSFORSIZE = 6;
+	const int TRANSFORSIZE = 10;
 	std::list<Unit> map;//(8, new char[page_size]);
 	std::list<Unit>::iterator write_iterator;
 	std::list<Unit>::iterator read_iterator;
@@ -40,7 +40,7 @@ protected:
 	
 public:
 	GzipAlloc(unsigned size);
-	void storeData(char *data, unsigned length);
+	void storeData(const char *data, unsigned length);
 	char* get();
 };
 
@@ -50,12 +50,11 @@ class InflateAlloc : public GzipAlloc
 private:
 	bool lastInflate;
 	SubsFilter *subsfilter;
-	void filter_save(BufferString &bs);
-	bool fetchLine(BufferString &bs);
 public:
 	InflateAlloc(unsigned size, SubsFilter *filter);
 	char* fetchData(unsigned &length);
 	void addInflateSize(unsigned size);
+	void setFilter(SubsFilter *filter);
 };
 
 /* greedy read */
@@ -68,7 +67,7 @@ public:
 	void addDeflateSize(unsigned size);
 	char * getReadPointer(unsigned &len);
 	void ShiftSize(unsigned size);
-	
+	bool contentAvailable();
 	/* only for deflate end */
 	void advance(unsigned size);
 };

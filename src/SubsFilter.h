@@ -1,26 +1,19 @@
-#include <cstring>
-#include <list>
-#include <tr1/memory>
-#include "BufferString.h"
+#ifndef ECAP_ADAPTER_SUBSFILTER_H
+#define ECAP_ADAPTER_SUBSFILTER_H
 
+#include "BufferString.h"
+#include <vector>
+
+class GzipAlloc;
 class SubsFilter {
 	
 public:
-	SubsFilter(char *pchar);
-	SubsFilter(char *pchar, unsigned size);
-
-	void addContent(unsigned size);
-	char * fetchUncompressed(unsigned &); // return two variable
-	bool finishFilter();
-	
-	
-	private:
-		typedef std::list<BufferString> BSList;
-		BSList sendingList;
-		BufferString buffer;
-		void storeSendingData(BufferString bs);
-		bool fetchLine(BufferString &bs);
-		void contentCheck();
-		const unsigned chunkSize = 4096;
-		std::tr1::shared_ptr<char> cPool;
+/* 
+ *  vector saves all the BufferString that need save.
+ * 	Remember, the remain data will retain to the next 
+ *  disposition.
+ */
+	virtual std::vector<BufferString> filter(BufferString bs)=0;
 };
+
+#endif

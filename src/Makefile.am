@@ -8,9 +8,11 @@ noinst_HEADERS = \
 	Debugger.h\
 	Gzipper.h\
 	SubsFilter.h\
+	LineSubsFilter.h\
 	BufferString.h\
 	RuleHandler.h\
 	RuleAccepter.h\
+	MemAlloc.h\
 	\
 	autoconf.h 
 
@@ -27,7 +29,8 @@ ecap_response_la_SOURCES = RespXaction.cc \
 	Service.cc \
 	Debugger.cc \
 	Gzipper.cc \
-	SubsFilter.cc 
+	MemAlloc.cc \
+	LineSubsFilter.cc 
 
 ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
 ecap_response_la_LIBADD= $(LIBECAP_LIBS) -lz -lboost_system

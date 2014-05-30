@@ -1,15 +1,20 @@
 #include "Gzipper.h"
 #include "Debugger.h"
+
+#include <assert.h>
 #include <cstring>
 #include <stdio.h>
 
-const u_char Gzipper::gzheader[10] = { 0x1f, 0x8b, Z_DEFLATED, 0, 0, 0, 0, 0, 0, 3 };
 
-Gzipper::Gzipper(unsigned length):
-			lastChunckSize(0),
+const char Gzipper::gzheader[10] = { 0x1f, 0x8b, Z_DEFLATED, 0, 0, 0, 0, 0, 0, 3 };
+
+Gzipper::Gzipper():
 			u_offset(0),
-			inflate_pool(InflateAlloc(inflateUnitSize)),
-			deflate_pool(DeflateAlloc(deflateUnitSize))
+			checksum(0),
+			lastChunckSize(0),
+			subsfilter(new LineSubsFilter),
+			inflate_pool(inflateUnitSize, subsfilter.get()),
+			deflate_pool(deflateUnitSize)
 { 
 
 	memset(&u_strm, 0, sizeof(z_stream));
@@ -57,13 +62,13 @@ int Gzipper::addData(const libecap::Area & chunk) {
 	return 1;
 }
 
-char* Gzipper::getCData()
+char* Gzipper::getCData(unsigned &size)
 {
-	return deflate_pool.getReadPointer();
+	return deflate_pool.getReadPointer(size);
 }
 
-unsigned Gzipper::getCSize() {
-	return deflate_pool.getReadSize();
+bool Gzipper::isAbAvailable() {
+	return deflate_pool.contentAvailable();
 }
 
 void Gzipper::ShiftSize(unsigned size) {
@@ -87,18 +92,19 @@ void Gzipper::Finish_zipper()
 	ret = deflateEnd(&c_strm);
 	Debugger() << "ret = " << ret;
 	
-	char *tailer = new char[c_strm.total_out+8];
-	int t = c_strm.total_out;
+	deflate_pool.advance(c_strm.total_out);
+	char *tailer = new char[8];
+	int t = 0;
 	tailer[t++] = (char) checksum & 0xff;
 	tailer[t++] = (char) (checksum>>8) & 0xff;
 	tailer[t++] = (char) (checksum>>16) & 0xff;
 	tailer[t++] = (char) (checksum>>24) & 0xff;
-	
 	tailer[t++] = (char) u_offset & 0xff;
 	tailer[t++] = (char) (u_offset>>8) & 0xff;
 	tailer[t++] = (char) (u_offset>>16) & 0xff;
 	tailer[t++] = (char) (u_offset>>24) & 0xff;
-	deflate_pool.storeData(tailer, c_strm.total_out+8);
+	
+	deflate_pool.storeData(tailer, 8);
 	delete[] tailer;
 	
 	gzipState = opComplete;
@@ -135,7 +141,7 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
         (void)inflateEnd(&u_strm);
         ungzipState = opComplete;
 		
-		inflate_poll.addInflateSize(0);
+		inflate_pool.addInflateSize(0);
     }
     
     return ret;

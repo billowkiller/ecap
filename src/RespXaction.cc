@@ -52,10 +52,8 @@ void Adapter::Xaction::start() {
 				adapted->header().removeAny(headerContentLength);
 				//const Header::Value transferEncodingValue = ;
 				adapted->header().add(headerTransferEncoding, Area::FromTempString("chunked"));
-				sp_zipper.reset(new Gzipper(content_length));
 			}
-			else
-				sp_zipper.reset(new Gzipper()); //chunked encoding, use default content_length
+			sp_zipper.reset(new Gzipper());
 			
 			Debugger() << "new shared_ptr<Gzipper> ";
 			
@@ -118,8 +116,9 @@ Area Adapter::Xaction::abContent(size_type offset, size_type size) {
     if (sendingAb == opComplete) {
         return libecap::Area::FromTempString("");
     }
-	
-	return Area::FromTempBuffer(sp_zipper->getCData(), sp_zipper->getCSize());
+    unsigned length = 0;
+    char *data = sp_zipper->getCData(length);
+	return Area::FromTempBuffer(data, length);
 }
 
 void Adapter::Xaction::abContentShift(size_type size) {
@@ -127,9 +126,8 @@ void Adapter::Xaction::abContentShift(size_type size) {
     Must(sendingAb == opOn || sendingAb == opComplete);
 	
 	sp_zipper->ShiftSize(size);
-	Debugger() << "sp_zipper->sendingOffset: " << sp_zipper->sendingOffset;
 	
-	if(sp_zipper->getCSize())
+	if(sp_zipper->isAbAvailable())
 		hostx->noteAbContentAvailable();
 }
 
@@ -175,7 +173,7 @@ void Adapter::Xaction::noteVbContentAvailable() {
     const libecap::Area vb = hostx->vbContent(0, Gzipper::inflateUnitSize); // get all vb
 	Debugger() << "vb.size" << vb.size;
 	
-	if(vb.size < Gzipper::inflateUnitSize) {
+	if(vb.size < Gzipper::deflateUnitSize) {
 		Debugger() << "pass this chunk";
 		return;
 	}

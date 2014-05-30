@@ -4,6 +4,9 @@
 /* "build environment" */
 #define CONFIG_HOST_TYPE "i686-pc-linux-gnu"
 
+/* define if the compiler supports basic C++11 syntax */
+/* #undef HAVE_CXX11 */
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
