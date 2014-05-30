@@ -6,9 +6,8 @@
 const u_char Gzipper::gzheader[10] = { 0x1f, 0x8b, Z_DEFLATED, 0, 0, 0, 0, 0, 0, 3 };
 
 Gzipper::Gzipper(unsigned length):
-			compressedSize(0),
-			sendingOffset(0),
 			lastChunckSize(0),
+			u_offset(0),
 			inflate_pool(InflateAlloc(inflateUnitSize)),
 			deflate_pool(DeflateAlloc(deflateUnitSize))
 { 
@@ -129,6 +128,7 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
 	
     // Debugger() << std::string(uData.get()+u_offset, 15*dlen - u_strm.avail_out);
     inflate_pool.addInflateSize((dlen<<4) - u_strm.avail_out);
+	u_offset += (dlen<<4) - u_strm.avail_out;
 
     if(ret == Z_STREAM_END)
     {

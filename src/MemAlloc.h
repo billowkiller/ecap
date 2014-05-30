@@ -1,37 +1,42 @@
-#ifndef ECAP_ADAPTER_TIMEUTILITY_H
-#define ECAP_ADAPTER_TIMEUTILITY_H
+#ifndef ECAP_ADAPTER_MEMALLOC_H
+#define ECAP_ADAPTER_MEMALLOC_H
 
-#include <boost/scoped_array.hpp>
+#include <boost/shared_array.hpp>
 #include <list>
+#include "BufferString.h"
 
 class SubsFilter;
-class StringBuffer;
 
 class GzipAlloc
 {
 protected:
 	struct Unit 
 	{
-		boost::scoped_array<char> node;
+		boost::shared_array<char> node;
+		char * const begin;
 		char *ptr;
 		unsigned conSize;
 		bool used;
-		Unit(int size):node(new char[size]), 
+		Unit(unsigned size):node(new char[size]), 
 				used(false),
 				conSize(0),
-				ptr(node.get()){}
+				begin(node.get()),
+				ptr(begin){}
 		void reset() {
 			used=false;
 			conSize = 0;
 			ptr = node.get();
 		}
 	};
-	Unit transfor;
-private:
+	
+protected:
+	const int UNITNUMBER = 4;
+	const int TRANSFORSIZE = 6;
 	std::list<Unit> map;//(8, new char[page_size]);
 	std::list<Unit>::iterator write_iterator;
 	std::list<Unit>::iterator read_iterator;
 	unsigned page_size;
+	Unit transfor;
 	
 public:
 	GzipAlloc(unsigned size);
@@ -40,12 +45,13 @@ public:
 };
 
 /* programmed read */
-class InflateAlloc : GzipAlloc 
+class InflateAlloc : public GzipAlloc 
 {
 private:
 	bool lastInflate;
 	SubsFilter *subsfilter;
-	void filter_save(StringBuffer &bs);
+	void filter_save(BufferString &bs);
+	bool fetchLine(BufferString &bs);
 public:
 	InflateAlloc(unsigned size, SubsFilter *filter);
 	char* fetchData(unsigned &length);
@@ -53,14 +59,18 @@ public:
 };
 
 /* greedy read */
-class DeflateAlloc : GzipAlloc 
+class DeflateAlloc : public GzipAlloc 
 {
+private:
+	unsigned lastout;
 public:
 	DeflateAlloc(unsigned size);
 	void addDeflateSize(unsigned size);
-	char * getReadPointer();
-	unsigned getReadSize();
+	char * getReadPointer(unsigned &len);
 	void ShiftSize(unsigned size);
+	
+	/* only for deflate end */
+	void advance(unsigned size);
 };
 
 #endif

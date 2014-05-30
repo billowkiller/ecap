@@ -1,4 +1,5 @@
-#include <string>
+#ifndef ECAP_ADAPTER_BUFFERSTRING_H
+#define ECAP_ADAPTER_BUFFERSTRING_H
 
 class BufferString {
 	
@@ -13,3 +14,5 @@ class BufferString {
 		BufferString(char *point, int size):start(point), pos(point), last(point+size){}
 		
 };
+
+#endif

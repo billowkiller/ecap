@@ -5,11 +5,9 @@
 #include <string>
 #include <assert.h>
 #include <zlib.h>
-#include <boost/shared_array.hpp>
 #include <boost/utility.hpp>
 #include <libecap/common/area.h>
-#include "SubsFilter.h"
-using boost::shared_array;
+#include "MemAlloc.h"
 
 class Gzipper : boost::noncopyable
 {
@@ -38,14 +36,13 @@ private:
 	Unit inflateTransfor;
 	z_stream u_strm;  //inflate z_stream
 	z_stream c_strm;
+	unsigned u_offset;
 	unsigned checksum;
 	unsigned lastChunckSize;  //record addData size
 	const static  u_char  gzheader[10];
 
 	int inflateData(const char *, unsigned);
-	int deflateData();
-	
-		
+	int deflateData();	
 };
 
 
