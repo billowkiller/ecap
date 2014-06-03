@@ -118,17 +118,18 @@ Area Adapter::Xaction::abContent(size_type offset, size_type size) {
     }
     unsigned length = 0;
     char *data = sp_zipper->getCData(length);
+	
+	if(length == 0) {
+		return libecap::Area::FromTempString("");
+	}
 	return Area::FromTempBuffer(data, length);
 }
 
 void Adapter::Xaction::abContentShift(size_type size) {
-	Debugger() << "abContentShift";
+	Debugger() << "abContentShift: " << size;
     Must(sendingAb == opOn || sendingAb == opComplete);
 	
 	sp_zipper->ShiftSize(size);
-	
-	if(sp_zipper->isAbAvailable())
-		hostx->noteAbContentAvailable();
 }
 
 void Adapter::Xaction::noteVbContentDone(bool atEnd) {  
@@ -141,6 +142,9 @@ void Adapter::Xaction::noteVbContentDone(bool atEnd) {
 		hostx->blockVirgin();
 		abDiscard();
 	}
+    
+	Must(sp_zipper);
+	sp_zipper->Finish_zipper();
 	
 	Debugger() << "hostx->vbContentShift: " << sp_zipper->getLastChunckSize();
     hostx->vbContentShift(sp_zipper->getLastChunckSize());
@@ -150,9 +154,6 @@ void Adapter::Xaction::noteVbContentDone(bool atEnd) {
 		Debugger() << "noteAbContentAvailable";
         hostx->noteAbContentAvailable();
     }
-    
-	Must(sp_zipper);
-	sp_zipper->Finish_zipper();
 	
     Must(receivingVb == opOn);
     receivingVb = opComplete;

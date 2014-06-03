@@ -11,18 +11,39 @@ GzipAlloc::GzipAlloc(unsigned size):
 			page_size(size),
 			transfor(Unit(TRANSFORSIZE*size))
 {
+}
+
+char* GzipAlloc::get() {
+	return transfor.ptr;
+}
+
+/* GzipAlloc  End */
+
+/* InflateAlloc  Definition */
+InflateAlloc::InflateAlloc(unsigned size, SubsFilter *filter): GzipAlloc(size), subsfilter(filter),lastInflate(false){
 	for(int n=0; n<UNITNUMBER; n++)
 		map.push_back(Unit(size));
 	write_iterator = map.begin();
 	read_iterator = map.begin();
+	
+	max1=0;
+	max2=0;
 }
 
-void GzipAlloc::storeData(const char *data, unsigned length) 
+void InflateAlloc::storeData(const char *data, unsigned length) 
 {
 	if(write_iterator == map.end()) 
 		write_iterator++;
 	
 	unsigned len = write_iterator->ptr-write_iterator->begin;
+	
+// 	while(write_iterator->conSize==0 
+// 		&& write_iterator+1 != map.end()
+// 		&& (write_iterator+1)->conSize==0 
+// 		&& write_iterator!=read_iterator 
+// 		&& map.size()>4) {
+// 		map.erase(write_iterator++);
+// 	}
 	
 	if(!write_iterator->used)
 		write_iterator->used = true;
@@ -64,17 +85,6 @@ void GzipAlloc::storeData(const char *data, unsigned length)
 	}
 }
 
-char* GzipAlloc::get() {
-	return transfor.ptr;
-}
-
-/* GzipAlloc  End */
-
-/* InflateAlloc  Definition */
-InflateAlloc::InflateAlloc(unsigned size, SubsFilter *filter): GzipAlloc(size), subsfilter(filter),lastInflate(false){
-	
-}
-
 void InflateAlloc::addInflateSize(unsigned size) {
 	if(size == 0) {
 		lastInflate = true;
@@ -92,7 +102,7 @@ void InflateAlloc::addInflateSize(unsigned size) {
 	//printf("vec.size = %d\n", vec.size());
 	if(vec.empty()) return;
 	
-	for(BufferString &buffer: vec) {
+	for(auto &buffer: vec) {
 		storeData(buffer.start, buffer.last-buffer.start);
 		transfor.conSize -= buffer.last-buffer.start;
 		//printf("transfor.conSize = %d\n", transfor.conSize);
@@ -132,69 +142,88 @@ char* InflateAlloc::fetchData(unsigned &length) {
 		//printf("\n%.*s\n", page_size, read_iterator->begin);
 		length = page_size;
 		read_iterator->reset();
+			
 		return (read_iterator++)->begin;
 	}
+}
+
+
+void InflateAlloc::statistics() {
+	unsigned temp = 0;
+	for(auto &t: map) {
+		temp += page_size;
+	}
+	printf("*******************\n");
+	printf("InflateAlloc statistics\n");
+	printf("map total number %d, size: %d\n", temp/page_size, temp);
+	unsigned usedSize = 0, usedNumber = 0;
+	for(auto &t: map) {
+		usedSize += t.conSize;
+		if(t.conSize) usedNumber++;
+	}
+	max1 = usedNumber>max1?usedNumber:max1;
+	map1[usedNumber]++;
+	printf("map used number %d/%d, size: %d\n", usedNumber, temp/page_size, usedSize);
+	max2 = (transfor.conSize/page_size+1>max2)?(transfor.conSize/page_size+1):max2;
+	map2[(transfor.conSize/page_size+1)]++;
+	printf("used Transfor size %d/%d, number %d/%d\n", 
+		   transfor.conSize, TRANSFORSIZE*page_size, 
+		   transfor.conSize/page_size+1, TRANSFORSIZE
+  		);
+	printf("max used map = %d, max transfor = %d\n", max1, max2);
+	printf("*******************\n");
 }
 
 /* InflateAlloc  End */
 
 /* DeflateAlloc  Definition */
 
-DeflateAlloc::DeflateAlloc(unsigned size): GzipAlloc(size), lastout(0) {
-	
+DeflateAlloc::DeflateAlloc(unsigned size): GzipAlloc(size) {
+	max=0;
+}
+
+void DeflateAlloc::storeData(const char *data, unsigned length) {
+	memcpy(transfor.ptr, data, length);
+	addDeflateSize(length);
 }
 
 void DeflateAlloc::addDeflateSize(unsigned size) {
-	lastout = size;
-	storeData(transfor.begin, size);
-	transfor.reset();
+	
+	transfor.conSize += size;
+	assert(transfor.conSize <= TRANSFORSIZE*page_size);
+	transfor.ptr += size;
 }
 
 bool DeflateAlloc::contentAvailable() {
-	if(read_iterator == map.end()) 
-		read_iterator++;
-	if(!read_iterator->used) return false;
-	return read_iterator->conSize!=0;
+	return transfor.conSize==0;
 }
 
 char * DeflateAlloc::getReadPointer(unsigned &len) {
-	if(read_iterator == map.end()) 
-		read_iterator++;
 	
-	if(!read_iterator->used) {
-		len = 0;
-		return NULL;
-	}
-	
-	assert(read_iterator->conSize <= read_iterator->ptr-read_iterator->begin);
-	len = read_iterator->conSize;
-	return read_iterator->ptr-len;
+	len = transfor.conSize;
+	return transfor.begin;
 }
 
 void DeflateAlloc::ShiftSize(unsigned size) {
-	if(read_iterator == map.end()) read_iterator++;
 	
-	read_iterator->conSize -= size;
-	
-	if(read_iterator->conSize != 0)
-		return;
-	
-	if(read_iterator->ptr-read_iterator->begin == page_size)
-		(read_iterator++)->reset();
-	else
-		read_iterator->reset();
+	transfor.conSize -= size;
+	if(transfor.conSize == 0)
+		transfor.ptr = transfor.begin;
+	memmove(transfor.begin, transfor.begin+size, transfor.conSize);
+	transfor.ptr = transfor.begin+transfor.conSize;
 }
 
-void DeflateAlloc::advance(unsigned size) {
-	if(size==0) return;
-	
-	assert(write_iterator->ptr != write_iterator->begin+page_size);
-	
-	*(write_iterator->ptr++) = transfor.node[lastout];
-	//printf("advance %d\n", write_iterator->ptr-write_iterator->begin);
-	write_iterator->conSize += 1;
-	
-	storeData("0000", size-1);
-	
+void DeflateAlloc::statistics() {
+	printf("*******************\n");
+	printf("DeflateAlloc statistics\n");
+	printf("used Transfor size %d/%d, number %d/%d\n", 
+		   transfor.conSize, TRANSFORSIZE*page_size, 
+		   transfor.conSize/page_size+1, TRANSFORSIZE
+  		);
+	max = (transfor.conSize/page_size+1)>max?(transfor.conSize/page_size+1):max;
+	map[(transfor.conSize/page_size+1)]++;
+	printf("max transfor = %d\n", max);
+	printf("*******************\n");
 }
+
 /* DeflateAlloc  End */

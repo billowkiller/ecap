@@ -3,7 +3,7 @@
 
 #include <assert.h>
 #include <cstring>
-#include <stdio.h>
+#include <cstdio>
 
 
 const char Gzipper::gzheader[10] = { 0x1f, 0x8b, Z_DEFLATED, 0, 0, 0, 0, 0, 0, 3 };
@@ -53,11 +53,15 @@ int Gzipper::addData(const libecap::Area & chunk) {
 		Debugger() << "inflateData fail";
 		return -1;
 	}
+	printf("InflateAlloc statistics\n");
+	inflate_pool.statistics();
+	
 	if(deflateData() == -1) {
 		Debugger() << "deflateData fail";
 		return -2;
 	}
-	Debugger() << "deflate finish";
+	printf("DeflateAlloc statistics\n");
+	deflate_pool.statistics();
 	
 	return 1;
 }
@@ -92,7 +96,7 @@ void Gzipper::Finish_zipper()
 	ret = deflateEnd(&c_strm);
 	Debugger() << "ret = " << ret;
 	
-	deflate_pool.advance(c_strm.total_out);
+	deflate_pool.addDeflateSize(c_strm.total_out);
 	char *tailer = new char[8];
 	int t = 0;
 	tailer[t++] = (char) checksum & 0xff;
@@ -113,9 +117,7 @@ void Gzipper::Finish_zipper()
 int Gzipper::inflateData(const char * data, unsigned dlen) {
     assert(ungzipState == opOn);
 	
-	Debugger() << "inflateData";
 	int ret;
-
     u_strm.next_in = (Bytef*)(data);
     u_strm.avail_in = dlen;
     u_strm.next_out = (Bytef*)(inflate_pool.get());
@@ -132,9 +134,12 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
         return -1;
     }
 	
-    // Debugger() << std::string(uData.get()+u_offset, 15*dlen - u_strm.avail_out);
-    inflate_pool.addInflateSize((dlen<<4) - u_strm.avail_out);
-	u_offset += (dlen<<4) - u_strm.avail_out;
+	unsigned inflateSize = (dlen<<4) - u_strm.avail_out;
+    //Debugger() << std::string(inflate_pool.get(), inflateSize);
+    Debugger() << "inflateData " << inflateSize;
+    inflate_pool.addInflateSize(inflateSize);
+	u_offset += inflateSize;
+	//Debugger() << "u_offset " << u_offset;
 
     if(ret == Z_STREAM_END)
     {
@@ -150,10 +155,9 @@ int Gzipper::inflateData(const char * data, unsigned dlen) {
 int Gzipper::deflateData()
 {
 	assert(gzipState == opOn);
-	Debugger() << "deflateData";
 	unsigned len=0;
 	Bytef* buf_in = (Bytef*)(inflate_pool.fetchData(len));
-	
+	unsigned s = 0;
 	while(len)
 	{
 		c_strm.next_in = buf_in;
@@ -176,9 +180,12 @@ int Gzipper::deflateData()
 		}
 		
 		deflate_pool.addDeflateSize(c_strm.total_out);
+		s+= c_strm.total_out;
 		
 		buf_in = (Bytef*)(inflate_pool.fetchData(len));
 	}
+	
+	Debugger() << "deflateData " << s;
 	
 	return 1;
 }

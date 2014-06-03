@@ -6,6 +6,7 @@
 #include <string>
 #include <zlib.h>
 #include <fstream>
+#include <map>
 using namespace std;
 
 LineSubsFilter subsfilter;
@@ -142,7 +143,7 @@ int finish(z_stream *c_strm) {
 	c_strm->total_out = 0;
 	ret = deflate(c_strm, Z_FINISH);
 	ret = deflateEnd(c_strm);
-	deflate_pool.advance(c_strm->total_out);
+	deflate_pool.addDeflateSize(c_strm->total_out);
 	char *tailer = new char[8];
 	int t = 0;
 	tailer[t++] = (char) checksum & 0xff;
@@ -179,20 +180,36 @@ int main()
 		else
 			size = length - offset;
 		inflate_data(&strm, size, file+offset);
+		inflate_pool.statistics();
 		deflate_data(&c_strm);
+		deflate_pool.statistics();
 		if(size != 2048)
 			finish(&c_strm);
 			
 		unsigned rsize;
 		char * rpointer = deflate_pool.getReadPointer(rsize);
-		while(rsize) {
+		if(rpointer)
+		{
 			ofs << string(rpointer, rsize);
 			c_offset += rsize;
 			deflate_pool.ShiftSize(rsize);
-			rpointer = deflate_pool.getReadPointer(rsize);
 		}
 		
 		offset+=size;
+	}
+	
+	map<int, int>::iterator it;
+	printf("inflate_pool, map useage\n");
+	for(it = inflate_pool.map1.begin(); it!=inflate_pool.map1.end(); it++) {
+		printf("%d, %d\n", it->first, it->second);
+	}
+	printf("inflate_pool, transfor useage\n");
+	for(it = inflate_pool.map2.begin(); it!=inflate_pool.map2.end(); it++) {
+		printf("%d, %d\n", it->first, it->second);
+	}
+	printf("deflate_pool, transfor useage\n");
+	for(it = deflate_pool.map.begin(); it!=deflate_pool.map.end(); it++) {
+		printf("%d, %d\n", it->first, it->second);
 	}
 	
 	printf("c_offset = %d\n", c_offset);
