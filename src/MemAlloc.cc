@@ -21,13 +21,33 @@ char* GzipAlloc::get() {
 
 /* InflateAlloc  Definition */
 InflateAlloc::InflateAlloc(unsigned size, SubsFilter *filter): GzipAlloc(size), subsfilter(filter),lastInflate(false){
-	for(int n=0; n<UNITNUMBER; n++)
+	for(int n=0; n<MINIUNITNUMBER; n++)
 		map.push_back(Unit(size));
 	write_iterator = map.begin();
 	read_iterator = map.begin();
 	
 	max1=0;
 	max2=0;
+}
+
+void InflateAlloc::adjustMaps() {
+	if(map.size() < 3) return;
+	map_pointer map_pos = write_iterator;
+	if(map_pos == map.end()) map_pos++;
+	
+	int num_unit = MINIUNITNUMBER;
+	
+	while(num_unit--) {
+		map_pos++;
+		if(map_pos == map.end()) map_pos++;
+	}
+	
+	while(map_pos!=read_iterator) {
+		map.erase(map_pos++);
+		if(map_pos == map.end()) map_pos++;
+	}
+	
+	assert(map.size()==2);
 }
 
 void InflateAlloc::storeData(const char *data, unsigned length) 
@@ -93,12 +113,11 @@ void InflateAlloc::addInflateSize(unsigned size) {
 	}
 		
 	transfor.conSize += size;
-	//printf("transfor.conSize = %d\n", transfor.conSize);
 	assert(transfor.conSize <= TRANSFORSIZE*page_size);
 	transfor.ptr += size;
 	BufferString bs(const_cast<char *>(transfor.begin), transfor.conSize);
 	
-	std::vector<BufferString> vec = std::move(subsfilter->filter(bs));
+	std::vector<BufferString> vec = subsfilter->filter(bs);
 	//printf("vec.size = %d\n", vec.size());
 	if(vec.empty()) return;
 	
@@ -127,19 +146,17 @@ char* InflateAlloc::fetchData(unsigned &length) {
 		if(lastInflate && read_iterator->conSize) {
 			length = read_iterator->conSize;
 			read_iterator->reset();
-			//printf("read_iterator->begin %X\n", read_iterator->begin);
-			//printf("\n%.*s\n", page_size, read_iterator->begin);
 			return read_iterator->begin;
 		}
 		else {
+			assert(read_iterator == write_iterator);
+			adjustMaps(); 
 			length = 0;
 			return NULL;
 		}
 	}
 	else
 	{
-		//printf("read_iterator->begin %X\n", read_iterator->begin);
-		//printf("\n%.*s\n", page_size, read_iterator->begin);
 		length = page_size;
 		read_iterator->reset();
 			

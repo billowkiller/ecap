@@ -43,30 +43,34 @@ public:
 	virtual void statistics() = 0;
 };
 
-/* programmed read */
 class InflateAlloc : public GzipAlloc 
 {
-	
 private:
-	unsigned max1, max2;
-	bool lastInflate;
-	SubsFilter *subsfilter;
-	const int UNITNUMBER = 2;
-	std::list<Unit> map;//(8, new char[page_size]);
-	std::list<Unit>::iterator write_iterator;
-	std::list<Unit>::iterator read_iterator;
-	
+	typedef std::list<Unit> map_type;
+	typedef std::list<Unit>::iterator map_pointer;
+	// shrink map size to 2;
+	// optional
+	void adjustMaps(); 
 public:
 	InflateAlloc(unsigned size, SubsFilter *filter);
 	virtual void storeData(const char *data, unsigned length);
 	char* fetchData(unsigned &length);
 	void addInflateSize(unsigned size);
 	void setFilter(SubsFilter *filter);
-	virtual void statistics();
-	std::map<int, int> map1, map2;
+	virtual void statistics(); //for log
+	std::map<int, int> map1, map2; //for log
+
+private:
+	unsigned max1, max2;
+	bool lastInflate;
+	SubsFilter *subsfilter;
+	const int MINIUNITNUMBER = 2;
+	map_type map; //read to deflate
+	map_pointer write_iterator;
+	map_pointer read_iterator;
+	
 };
 
-/* greedy read */
 class DeflateAlloc : public GzipAlloc 
 {
 private: 
@@ -80,7 +84,7 @@ public:
 	void ShiftSize(unsigned size);
 	bool contentAvailable();
 	virtual void statistics();
-	std::map<int, int> map;
+	std::map<int, int> map; //unit number, frequency
 };
 
 #endif

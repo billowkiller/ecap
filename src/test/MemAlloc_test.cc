@@ -1,3 +1,8 @@
+/*
+ * Usage: ./test google_page_c
+ * test is generated excutable file, and google_page_c is a compressed page file
+ */
+
 #include "../MemAlloc.h"
 #include "../LineSubsFilter.h"
 #include <iostream>
@@ -160,11 +165,15 @@ int finish(z_stream *c_strm) {
 	delete[] tailer;
 }
 
-int main()
+int main(int arg, char **argv)
 {
+	if(arg==1) {
+		printf("Please specify a file\n");
+		exit(0);
+	}
 	ofstream ofs("compressed", ios::out);
     long length=0, offset=0;
-    char *file = fileRead("David_page_c", &length);
+    char *file = fileRead(argv[1], &length);
 
     z_stream strm;
     inflate_init(&strm);

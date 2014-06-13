@@ -11,7 +11,7 @@ std::vector<BufferString> LineSubsFilter::filter(BufferString bs) {
 		bs.start = linefeed;
 		linefeed = (char *)memchr(bs.start, '\n', bs.last-bs.start);
 	}
-	return vec;
+	return std::move(vec);
 		
 }
 
