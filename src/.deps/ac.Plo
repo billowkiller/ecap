@@ -1,4 +1,4 @@
-ac.lo: ac.cc /usr/include/stdio.h /usr/include/features.h \
+ac.lo: ac.cc ac.h /usr/include/stdio.h /usr/include/features.h \
  /usr/include/i386-linux-gnu/bits/predefs.h \
  /usr/include/i386-linux-gnu/sys/cdefs.h \
  /usr/include/i386-linux-gnu/bits/wordsize.h \
@@ -97,6 +97,8 @@ ac.lo: ac.cc /usr/include/stdio.h /usr/include/features.h \
  /usr/local/include/glib/deprecated/gthread.h /usr/include/pthread.h \
  /usr/include/sched.h /usr/include/i386-linux-gnu/bits/sched.h \
  /usr/include/i386-linux-gnu/bits/setjmp.h
+
+ac.h:
 
 /usr/include/stdio.h:
 

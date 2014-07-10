@@ -26,6 +26,7 @@
  *  Description:  
  * =====================================================================================
  */
+/*
 sqlite3 *db = NULL;
 int init_sqlite()
 {
@@ -41,9 +42,9 @@ int init_sqlite()
         return 0;
     }
 	return 1;
-}		/* -----  end of function init_sqlite  ----- */
+}	
 
-
+*/
 
 using namespace libecap;
 
@@ -218,11 +219,6 @@ void Adapter::Xaction::start() {
 	shared_ptr<Message> adapted = hostx->virgin().clone();
 	Must(adapted != 0);
 	
-		
-		
-		
-		init_sqlite();
-		
 	
 	
 	if (validRequestHeader(adapted))

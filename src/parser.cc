@@ -192,12 +192,7 @@ int parse_url(const char *url, struct connection_info* c_info)
 	//printf("............url = %s.........\n", url);
 	char *pos, *path;
 	int len=0;
-	char *temp_url=(char*)malloc(strlen(url)+1);
-	strcpy(temp_url,url);
-	temp_url[strlen(url)]='\0';
-	if(url_match(temp_url))
-		c_info->url=1;
-	else c_info->url=0;
+	
 	
 	/*
 	 * //===start== add by yangbr, 2014.1.10

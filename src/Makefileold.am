@@ -13,14 +13,9 @@ noinst_HEADERS = \
 	parser.h\
 	urlparser.h\
 	qs_parse.h\
-	acsm.h\
+	kw_match.h\
+	ac.h\
 	SQLFactory.h\
-	StrMatcher.h\
-	RuleAccepter.h\
-	EventFuncs.h\
-	time_utility.h\
-	ConfigEvent.h\
-	ConfigTimer.h\
 	autoconf.h 
 
 # request
@@ -30,26 +25,15 @@ ecap_request_la_SOURCES = ReqXaction.cc \
 				parser.cc\
 				urlparser.cc\
 				qs_parse.cc\
-				KeywordHandler.cc\
-				Log.cc\
-				SQLFactory.cc\
+				kw_match.cc\
+				ac.cc\
 				DBHandler.cc\
-				RuleHandler.cc\
-				StrMatcher.cc\
-				RuleAccepter.cc\
-				acsmx.cc\
-				Pz_id.cc\
-				Pz_kw.cc\
-				EventFuncs.cc\
-				time_utility.cc\
-				ConfigEvent.cc\
-				ConfigTimer.cc
-				
-				
+				SQLFactory.cc\
+				RuleHandler.cc
 				
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_request_la_LIBADD= $(LIBECAP_LIBS) -lglib-2.0 -lsqlite3 -lboost_thread -lrt -lboost_system -lboost_date_time
+ecap_request_la_LIBADD= $(LIBECAP_LIBS) -lsqlite3
 
 # response
 ecap_response_la_SOURCES = RespXaction.cc \

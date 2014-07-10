@@ -139,7 +139,7 @@ RequestHandler.lo: RequestHandler.cc /usr/include/c++/4.7/string \
  /usr/local/include/glib/deprecated/gcompletion.h \
  /usr/local/include/glib/deprecated/gmain.h \
  /usr/local/include/glib/deprecated/grel.h \
- /usr/local/include/glib/deprecated/gthread.h sqlite.h \
+ /usr/local/include/glib/deprecated/gthread.h \
  /usr/include/c++/4.7/iostream /usr/include/c++/4.7/ostream \
  /usr/include/c++/4.7/ios /usr/include/c++/4.7/bits/ios_base.h \
  /usr/include/c++/4.7/bits/locale_classes.h \
@@ -154,7 +154,18 @@ RequestHandler.lo: RequestHandler.cc /usr/include/c++/4.7/string \
  /usr/include/c++/4.7/bits/locale_facets.tcc \
  /usr/include/c++/4.7/bits/basic_ios.tcc \
  /usr/include/c++/4.7/bits/ostream.tcc /usr/include/c++/4.7/istream \
- /usr/include/c++/4.7/bits/istream.tcc
+ /usr/include/c++/4.7/bits/istream.tcc SQLFactory.h \
+ /usr/include/c++/4.7/vector /usr/include/c++/4.7/bits/stl_construct.h \
+ /usr/include/c++/4.7/ext/alloc_traits.h \
+ /usr/include/c++/4.7/bits/stl_uninitialized.h \
+ /usr/include/c++/4.7/bits/stl_vector.h \
+ /usr/include/c++/4.7/bits/stl_bvector.h \
+ /usr/include/c++/4.7/bits/vector.tcc /usr/include/c++/4.7/map \
+ /usr/include/c++/4.7/bits/stl_tree.h /usr/include/c++/4.7/bits/stl_map.h \
+ /usr/include/c++/4.7/bits/stl_multimap.h /usr/local/include/sqlite3.h \
+ StrMatcher.h /usr/include/c++/4.7/list \
+ /usr/include/c++/4.7/bits/stl_list.h /usr/include/c++/4.7/bits/list.tcc \
+ acsm.h /usr/include/c++/4.7/ctime
 
 /usr/include/c++/4.7/string:
 
@@ -554,8 +565,6 @@ kw_match.h:
 
 /usr/local/include/glib/deprecated/gthread.h:
 
-sqlite.h:
-
 /usr/include/c++/4.7/iostream:
 
 /usr/include/c++/4.7/ostream:
@@ -595,3 +604,41 @@ sqlite.h:
 /usr/include/c++/4.7/istream:
 
 /usr/include/c++/4.7/bits/istream.tcc:
+
+SQLFactory.h:
+
+/usr/include/c++/4.7/vector:
+
+/usr/include/c++/4.7/bits/stl_construct.h:
+
+/usr/include/c++/4.7/ext/alloc_traits.h:
+
+/usr/include/c++/4.7/bits/stl_uninitialized.h:
+
+/usr/include/c++/4.7/bits/stl_vector.h:
+
+/usr/include/c++/4.7/bits/stl_bvector.h:
+
+/usr/include/c++/4.7/bits/vector.tcc:
+
+/usr/include/c++/4.7/map:
+
+/usr/include/c++/4.7/bits/stl_tree.h:
+
+/usr/include/c++/4.7/bits/stl_map.h:
+
+/usr/include/c++/4.7/bits/stl_multimap.h:
+
+/usr/local/include/sqlite3.h:
+
+StrMatcher.h:
+
+/usr/include/c++/4.7/list:
+
+/usr/include/c++/4.7/bits/stl_list.h:
+
+/usr/include/c++/4.7/bits/list.tcc:
+
+acsm.h:
+
+/usr/include/c++/4.7/ctime:

@@ -103,7 +103,10 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 ecap_request_la_DEPENDENCIES =
 am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo \
 	RequestHandler.lo parser.lo urlparser.lo qs_parse.lo \
-	kw_match.lo ac.lo sqlite.lo
+	KeywordHandler.lo Log.lo SQLFactory.lo DBHandler.lo \
+	RuleHandler.lo StrMatcher.lo RuleAccepter.lo acsmx.lo Pz_id.lo \
+	Pz_kw.lo EventFuncs.lo time_utility.lo ConfigEvent.lo \
+	ConfigTimer.lo
 ecap_request_la_OBJECTS = $(am_ecap_request_la_OBJECTS)
 ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -280,10 +283,14 @@ noinst_HEADERS = \
 	parser.h\
 	urlparser.h\
 	qs_parse.h\
-	kw_match.h\
-	ac.h\
-	sqlite.h\
-	\
+	acsm.h\
+	SQLFactory.h\
+	StrMatcher.h\
+	RuleAccepter.h\
+	EventFuncs.h\
+	time_utility.h\
+	ConfigEvent.h\
+	ConfigTimer.h\
 	autoconf.h 
 
 
@@ -294,12 +301,23 @@ ecap_request_la_SOURCES = ReqXaction.cc \
 				parser.cc\
 				urlparser.cc\
 				qs_parse.cc\
-				kw_match.cc\
-				ac.cc\
-				sqlite.cc
+				KeywordHandler.cc\
+				Log.cc\
+				SQLFactory.cc\
+				DBHandler.cc\
+				RuleHandler.cc\
+				StrMatcher.cc\
+				RuleAccepter.cc\
+				acsmx.cc\
+				Pz_id.cc\
+				Pz_kw.cc\
+				EventFuncs.cc\
+				time_utility.cc\
+				ConfigEvent.cc\
+				ConfigTimer.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_request_la_LIBADD = $(LIBECAP_LIBS) -lglib-2.0 -lsqlite3
+ecap_request_la_LIBADD = $(LIBECAP_LIBS) -lglib-2.0 -lsqlite3 -lboost_thread -lrt -lboost_system -lboost_date_time
 
 # response
 ecap_response_la_SOURCES = RespXaction.cc \
@@ -409,18 +427,29 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/ConfigEvent.Plo
+include ./$(DEPDIR)/ConfigTimer.Plo
+include ./$(DEPDIR)/DBHandler.Plo
 include ./$(DEPDIR)/Debugger.Plo
+include ./$(DEPDIR)/EventFuncs.Plo
 include ./$(DEPDIR)/Gzipper.Plo
+include ./$(DEPDIR)/KeywordHandler.Plo
+include ./$(DEPDIR)/Log.Plo
+include ./$(DEPDIR)/Pz_id.Plo
+include ./$(DEPDIR)/Pz_kw.Plo
 include ./$(DEPDIR)/ReqXaction.Plo
 include ./$(DEPDIR)/RequestHandler.Plo
 include ./$(DEPDIR)/RespXaction.Plo
+include ./$(DEPDIR)/RuleAccepter.Plo
+include ./$(DEPDIR)/RuleHandler.Plo
+include ./$(DEPDIR)/SQLFactory.Plo
 include ./$(DEPDIR)/Service.Plo
+include ./$(DEPDIR)/StrMatcher.Plo
 include ./$(DEPDIR)/SubsFilter.Plo
-include ./$(DEPDIR)/ac.Plo
-include ./$(DEPDIR)/kw_match.Plo
+include ./$(DEPDIR)/acsmx.Plo
 include ./$(DEPDIR)/parser.Plo
 include ./$(DEPDIR)/qs_parse.Plo
-include ./$(DEPDIR)/sqlite.Plo
+include ./$(DEPDIR)/time_utility.Plo
 include ./$(DEPDIR)/urlparser.Plo
 
 .cc.o:

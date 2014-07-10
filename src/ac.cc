@@ -1,9 +1,5 @@
  
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <glib.h>
-
+#include "ac.h"
 #define MAXWORD 30
 //gcc ac.c `pkg-config --cflags --libs glib-2.0` -o ac
 
@@ -67,6 +63,7 @@ static void buildGoto(GList* g_kw_list)
          char* outs=s;
          t=0;
          l=strlen(s);
+		 //can be impruved
          for(j=0;j<l;j++,s++)
          {
              if(_goto[t][*s-'a']==-1)
@@ -209,22 +206,28 @@ int ac(char* s)//input main string
     int alph;
     while(*s)
     {
+		
         alph=*s-'a';
+        if(alph>=0&&alph<26)
+		{
         while(_goto[state][alph]==-1)
             state=fail[state];
         state=_goto[state][alph];
 
         if(_out[state])
         {
-            print_set(_out[state]);
+            //print_set(_out[state]);
 			match++;
         }
-
         s++;
-
+		}
+        else 
+		{
+			state=0;
+			s++;
+		}
     }
     return match;
 }
-
 
 
