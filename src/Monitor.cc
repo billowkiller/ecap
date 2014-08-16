@@ -42,7 +42,7 @@ void Monitor::startSending() {
 	
 	while(true) {
 		std::ostringstream oss;
-		oss << request_num << ',' << upstream_size << ',' << vec2str(vs);
+		oss << request_num << ',' << upstream_size << ',' << downstream_size << ',' << vec2str(vs);
 		std::string str(oss.str());
 		//sprintf(sendline, "%d,%d,%s\n", request_num, upstream_size, vec2str(vs).c_str());
 		sendto(sockfd, str.c_str(), str.length(), 0,
@@ -50,7 +50,13 @@ void Monitor::startSending() {
 		//Debugger() << "	send complete" << str;
 		n=recvfrom(sockfd,recvline,1000,0,NULL,NULL);
 		//recvline[n]=0;
-		request_num = 0; upstream_size = 0; downstream_size=0; vs.clear(); //regather
+		
+		/* regather */
+		request_num = 0; upstream_size = 0; downstream_size=0; 
+		mutex.lock(); 
+		vs.clear(); 
+		mutex.unlock(); 
+		
 		sleep(1);
 	}
 }
@@ -65,14 +71,17 @@ std::string Monitor::vec2str(const std::vector<std::string> &vec) {
 	
 	std::ostringstream oss;
 
+	mutex.lock(); 
 	if (!vec.empty())
 	{
 		// Convert all but the last element to avoid a trailing " "
 		std::copy(vec.begin(), vec.end()-1,
 			std::ostream_iterator<std::string>(oss, "#"));
+		
 		// Now add the last element with no delimiter
 		oss << vec.back();
 	}
+	mutex.unlock(); 
 	return oss.str();
 }
 
