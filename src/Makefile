@@ -56,7 +56,9 @@ subdir = src
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/autoconf.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/cfgaux/libtool.m4 \
+am__aclocal_m4_deps =  \
+	$(top_srcdir)/cfgaux/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/cfgaux/libtool.m4 \
 	$(top_srcdir)/cfgaux/ltoptions.m4 \
 	$(top_srcdir)/cfgaux/ltsugar.m4 \
 	$(top_srcdir)/cfgaux/ltversion.m4 \
@@ -101,14 +103,15 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 ecap_request_la_DEPENDENCIES =
-am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo RuleAccepter.lo
+am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo RuleAccepter.lo \
+	Monitor.lo
 ecap_request_la_OBJECTS = $(am_ecap_request_la_OBJECTS)
 ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(ecap_request_la_LDFLAGS) $(LDFLAGS) -o $@
 ecap_response_la_DEPENDENCIES =
 am_ecap_response_la_OBJECTS = RespXaction.lo Service.lo Debugger.lo \
-	Gzipper.lo SubsFilter.lo
+	Gzipper.lo MemAlloc.lo LineSubsFilter.lo
 ecap_response_la_OBJECTS = $(am_ecap_response_la_OBJECTS)
 ecap_response_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -137,13 +140,13 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run aclocal-1.11
+ACLOCAL = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run aclocal-1.11
 AMTAR = $${TAR-tar}
 AR = /usr/bin/ar
 AR_R = /usr/bin/ar r
-AUTOCONF = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run automake-1.11
+AUTOCONF = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -153,7 +156,7 @@ CPPFLAGS =
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe
+CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe -std=gnu++11
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -167,6 +170,7 @@ EGREP = /bin/grep -E
 EXEEXT = 
 FGREP = /bin/grep -F
 GREP = /bin/grep
+HAVE_CXX11 = 
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -181,7 +185,7 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
@@ -207,10 +211,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 0.2.0
-abs_builddir = /home/billowkiller/Downloads/ecap/src
-abs_srcdir = /home/billowkiller/Downloads/ecap/src
-abs_top_builddir = /home/billowkiller/Downloads/ecap
-abs_top_srcdir = /home/billowkiller/Downloads/ecap
+abs_builddir = /home/billowkiller/Documents/ecap/src
+abs_srcdir = /home/billowkiller/Documents/ecap/src
+abs_top_builddir = /home/billowkiller/Documents/ecap
+abs_top_srcdir = /home/billowkiller/Documents/ecap
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -240,7 +244,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/install-sh
+install_sh = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/install-sh
 libdir = ${exec_prefix}/lib
 libecap_CFLAGS = -I/usr/local/include  
 libecap_LIBS = -L/usr/local/lib -lecap  
@@ -273,17 +277,20 @@ noinst_HEADERS = \
 	Debugger.h\
 	Gzipper.h\
 	SubsFilter.h\
+	LineSubsFilter.h\
 	BufferString.h\
 	RuleHandler.h\
 	RuleAccepter.h\
-	\
+	MemAlloc.h\
+	Monitor.h\
 	autoconf.h 
 
 
 # request
 ecap_request_la_SOURCES = ReqXaction.cc \
 				Debugger.cc\
-				RuleAccepter.cc
+				RuleAccepter.cc\
+				Monitor.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
 ecap_request_la_LIBADD = $(LIBECAP_LIBS) -lboost_system -lboost_thread
@@ -293,7 +300,8 @@ ecap_response_la_SOURCES = RespXaction.cc \
 	Service.cc \
 	Debugger.cc \
 	Gzipper.cc \
-	SubsFilter.cc 
+	MemAlloc.cc \
+	LineSubsFilter.cc 
 
 ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
 ecap_response_la_LIBADD = $(LIBECAP_LIBS) -lz -lboost_system
@@ -398,11 +406,13 @@ distclean-compile:
 
 include ./$(DEPDIR)/Debugger.Plo
 include ./$(DEPDIR)/Gzipper.Plo
+include ./$(DEPDIR)/LineSubsFilter.Plo
+include ./$(DEPDIR)/MemAlloc.Plo
+include ./$(DEPDIR)/Monitor.Plo
 include ./$(DEPDIR)/ReqXaction.Plo
 include ./$(DEPDIR)/RespXaction.Plo
 include ./$(DEPDIR)/RuleAccepter.Plo
 include ./$(DEPDIR)/Service.Plo
-include ./$(DEPDIR)/SubsFilter.Plo
 
 .cc.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

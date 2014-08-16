@@ -12,6 +12,7 @@ namespace EventTimer {
 	class ConfigEvent; // forward declartion
 	
 	boost::shared_ptr<ptime> curtime();
+	std::string getTime();
 	
 	/* calculate seconds from time1 to time2 */
 	int seconds_gap(const ptime *time1,const ptime *time2);

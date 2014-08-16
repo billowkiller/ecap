@@ -1,32 +1,28 @@
 #ifndef ECAP_ADAPTER_GZIPPER_H
 #define ECAP_ADAPTER_GZIPPER_H
 
-#include <stdio.h>
-#include <string>
-#include <assert.h>
+#include "MemAlloc.h"
+#include "LineSubsFilter.h"
 #include <zlib.h>
-#include <boost/shared_array.hpp>
 #include <boost/utility.hpp>
 #include <libecap/common/area.h>
-#include "SubsFilter.h"
-using boost::shared_array;
+#include <boost/scoped_ptr.hpp>
 
+class SubsFilter;
 class Gzipper : boost::noncopyable
 {
-private:
-	static const unsigned defaultContentLength = 100 * 1024; // 40KB
 public:
-	static const unsigned inflateUnitSize = 4*1024; //4kB
+	static const unsigned deflateUnitSize = 2*1024; //2kB
+	static const unsigned inflateUnitSize = 20*1024; //20kB
     
 public:
-	Gzipper(unsigned length=defaultContentLength);
+	Gzipper();
 
 	int addData(const libecap::Area &);
-	//int addData(std::string &compressed_data, unsigned dlen);
-	unsigned sendingOffset; //for compressed data
-	unsigned compressedSize; 
 	
-	char* getCData(int offset);
+	char* getCData(unsigned& size);
+	bool isAbAvailable();
+	void ShiftSize(unsigned size);
 	unsigned getLastChunckSize();
 	void Finish_zipper();
 	
@@ -35,21 +31,22 @@ private:
 	typedef enum { opOn, opComplete, opFail} OperationState;
 	OperationState ungzipState;
 	OperationState gzipState;
-	unsigned u_offset; //uncompressed data offset
-	shared_array<char> uData;
-	shared_array<char> cData;
+	
 	z_stream u_strm;  //inflate z_stream
 	z_stream c_strm;
-	unsigned u_flush;
-	SubsFilter subsFilter;
+	unsigned u_offset;
 	unsigned checksum;
-	unsigned contentLength;
 	unsigned lastChunckSize;  //record addData size
-	const static  u_char  gzheader[10];
+	
+	boost::scoped_ptr<SubsFilter> subsfilter;
+	InflateAlloc inflate_pool;
+	DeflateAlloc deflate_pool;
+	
+	const static  char  gzheader[10];
 
+private:
 	int inflateData(const char *, unsigned);
-	int deflateData();
-		
+	int deflateData();	
 };
 
 

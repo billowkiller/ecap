@@ -8,16 +8,19 @@ noinst_HEADERS = \
 	Debugger.h\
 	Gzipper.h\
 	SubsFilter.h\
+	LineSubsFilter.h\
 	BufferString.h\
 	RuleHandler.h\
 	RuleAccepter.h\
-	\
+	MemAlloc.h\
+	Monitor.h\
 	autoconf.h 
 
 # request
 ecap_request_la_SOURCES = ReqXaction.cc \
 				Debugger.cc\
-				RuleAccepter.cc
+				RuleAccepter.cc\
+				Monitor.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
 ecap_request_la_LIBADD= $(LIBECAP_LIBS) -lboost_system -lboost_thread
@@ -27,7 +30,8 @@ ecap_response_la_SOURCES = RespXaction.cc \
 	Service.cc \
 	Debugger.cc \
 	Gzipper.cc \
-	SubsFilter.cc 
+	MemAlloc.cc \
+	LineSubsFilter.cc 
 
 ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
 ecap_response_la_LIBADD= $(LIBECAP_LIBS) -lz -lboost_system

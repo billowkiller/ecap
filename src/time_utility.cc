@@ -5,6 +5,11 @@ boost::shared_ptr<ptime> EventTimer::curtime() {
 	return boost::shared_ptr<ptime>(new ptime(second_clock::local_time()));
 }
 
+std::string EventTimer::getTime() {
+	return boost::posix_time::to_iso_string(
+		boost::posix_time::second_clock::local_time());
+}
+
 int EventTimer::seconds_gap(const ptime *time1,const ptime *time2) {
 	time_duration gap = (*time1)-(*time2);
 	return gap.total_seconds();

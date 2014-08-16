@@ -6,6 +6,7 @@
 
 #include "RequestHandler.h"
 #include "RuleAccepter.h"
+#include "Monitor.h"
 #include "Debugger.h"
 #include <libecap/common/registry.h>
 #include <libecap/common/errors.h>
@@ -131,6 +132,7 @@ void Adapter::Service::start() {
 	// custom code would go here, but this service does not have one
 	Debugger() << "here !!!!!!!!!!!!!!!!";
 	RuleAccepter::startAccept();
+	Monitor::startMonitor();
 }
 
 void Adapter::Service::stop() {
@@ -179,6 +181,7 @@ void Adapter::Xaction::start() {
 	
 	// TODO: libecap should probably supply a global LastCall() of sorts
 	// to clear hostx member and then call the host transaction one last time
+	
 	Must(hostx);
 	if (hostx->virgin().body()) {
 		receivingVb = opOn;

@@ -20,7 +20,9 @@ m4_include(cfgaux/xstd_common.ac)
 m4_include(cfgaux/xstd_cpp_checks.ac)
 
 # Checks for programs.
+
 AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX_11(ext)
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL

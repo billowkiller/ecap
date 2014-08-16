@@ -57,7 +57,9 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	cfgaux/depcomp cfgaux/install-sh cfgaux/ltmain.sh \
 	cfgaux/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/cfgaux/libtool.m4 \
+am__aclocal_m4_deps =  \
+	$(top_srcdir)/cfgaux/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/cfgaux/libtool.m4 \
 	$(top_srcdir)/cfgaux/ltoptions.m4 \
 	$(top_srcdir)/cfgaux/ltsugar.m4 \
 	$(top_srcdir)/cfgaux/ltversion.m4 \
@@ -136,13 +138,13 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run aclocal-1.11
+ACLOCAL = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run aclocal-1.11
 AMTAR = $${TAR-tar}
 AR = /usr/bin/ar
 AR_R = /usr/bin/ar r
-AUTOCONF = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run automake-1.11
+AUTOCONF = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run automake-1.11
 AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -152,7 +154,7 @@ CPPFLAGS =
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe
+CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe -std=gnu++11
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -166,6 +168,7 @@ EGREP = /bin/grep -E
 EXEEXT = 
 FGREP = /bin/grep -F
 GREP = /bin/grep
+HAVE_CXX11 = 
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -180,7 +183,7 @@ LIPO =
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/missing --run makeinfo
 MANIFEST_TOOL = :
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
@@ -206,10 +209,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 0.2.0
-abs_builddir = /home/billowkiller/Downloads/ecap
-abs_srcdir = /home/billowkiller/Downloads/ecap
-abs_top_builddir = /home/billowkiller/Downloads/ecap
-abs_top_srcdir = /home/billowkiller/Downloads/ecap
+abs_builddir = /home/billowkiller/Documents/ecap
+abs_srcdir = /home/billowkiller/Documents/ecap
+abs_top_builddir = /home/billowkiller/Documents/ecap
+abs_top_srcdir = /home/billowkiller/Documents/ecap
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -239,7 +242,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/billowkiller/Downloads/ecap/cfgaux/install-sh
+install_sh = ${SHELL} /home/billowkiller/Documents/ecap/cfgaux/install-sh
 libdir = ${exec_prefix}/lib
 libecap_CFLAGS = -I/usr/local/include  
 libecap_LIBS = -L/usr/local/lib -lecap  

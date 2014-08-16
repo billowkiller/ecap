@@ -80,13 +80,8 @@ void SubsFilter::addContent(unsigned size)
  * check the added data. And if there is not a complete sentence 
  * in the end of the data, we keep it and recalculate in the next turn.
  */
-void SubsFilter::contentCheck() {
-	BufferString bs; //fetched sentence, including last LF.
-	while(fetchLine(bs))
-	{
-		/* yangbr */
-		storeSendingData(bs);
-	}
+bool SubsFilter::contentCheck(BufferString &bs) {
+	return true;
 }
 
 /*
