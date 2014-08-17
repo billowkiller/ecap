@@ -3,6 +3,7 @@
 #include "ConfigTimer.h"
 #include "time_utility.h"
 #include <string>
+//#include <iostream>
 
 bool Pz_id::addPz_id(Pz_idTable& idtable)
 {
@@ -131,4 +132,40 @@ bool Pz_id::addPz_id(string rule, int len)
 	
 	return 1;
 
+}
+Pz_idTable Pz_id::getPz_idByTuple(string& PZUserID, string& PZResourceID, string& PZAction)
+{
+	vector<pair<string,string> > v;
+	if(!PZUserID.empty())
+		v.push_back(make_pair("PZUserID",PZUserID));
+	if(!PZUserID.empty())
+		v.push_back(make_pair("PZResourceID",PZResourceID));
+	if(!PZUserID.empty())
+		v.push_back(make_pair("PZAction",PZAction));
+	
+	string sql=sqlFactory.makeChkSQL(v);
+	int nrow=0,ncolumn;
+	char *zErrMsg;
+    char **azResult;
+	std::cout<<sql<<std::endl;
+	sqlite3_get_table(DBHandler::instance()->db, sql.c_str(), &azResult, &nrow, &ncolumn, &zErrMsg);
+	//std::cout<<ncolumn<<" "<<nrow<<std::endl;
+	Pz_idTable idtable;
+	//if(ncolumn==10&&nrow==1)
+	if(nrow>0)
+	{
+		int i;
+		i=ncolumn;
+		idtable.PZUserID=azResult[i++];
+		idtable.PZResourceID=azResult[i++];
+		idtable.PZAction=azResult[i++];
+		idtable.PZOperator=azResult[i++];
+		idtable.PZOperateTime=azResult[i++];
+		idtable.PZControlTimeFrom=azResult[i++];
+		idtable.PZControlTimeTo=azResult[i++];
+		idtable.PZControlType=azResult[i++];
+		idtable.PZSNSType=azResult[i++];
+		idtable.ConfigId=azResult[i++];
+	}
+	return idtable;
 }

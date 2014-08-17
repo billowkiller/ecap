@@ -218,6 +218,12 @@ void RuleAccepter::startSever()
 				   pzid.addPz_id(buf,count);
 			   else if(buf[0]=='P'&&buf[1]=='K')
 				   pzkw.addPz_kw(buf,count);
+			   /*
+			   else if(buf[0]=='D'&&buf[1]=='R')
+				   pzid.delPz_id(buf,count);
+			   else if(buf[0]=='D'&&buf[1]=='K')
+				   pzkw.delPz_kw(buf,count);
+			   */
 		
 				   
 			   

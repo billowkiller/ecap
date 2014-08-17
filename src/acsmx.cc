@@ -403,6 +403,16 @@ void writeLog_kw(string word)
 	p=localtime(&now_time);
 	sprintf(time_str,"%d.%d.%d,%d:%d:%d", (1900+p->tm_year),(1+p->tm_mon),p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec);
 	lt.LogTime=time_str;
+	Pz_kwTable kwtable;
+	Pz_kw myPz_kw;
+	kwtable=myPz_kw.getPz_kwByKw(word);
+	lt.PZConfigId=kwtable.PZConfigId;
+	lt.PZOperator=kwtable.PZOperator;
+	lt.PZOperateTime=kwtable.PZOperateTime;
+	lt.PZControlTimeFrom=kwtable.PZControlTimeFrom;
+	lt.PZControlTimeTo=kwtable.PZControlTimeTo;
+	lt.PZControlType=kwtable.PZControlType;
+	
 	Log mylog;
 	mylog.addLog(lt);
 }

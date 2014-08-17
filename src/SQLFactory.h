@@ -54,9 +54,10 @@ private:
 class RuleHandler{
 public:
 	RuleHandler();
-	bool addRule(string Subject,string Sname,string Action,string ControTimeFrom,string ControlTimeTo,string ContentId,string ContentType);
+	bool addRule(string Subject, string Sname, string Action, string ControTimeFrom, string ControlTimeTo, string ContentId, string ContentType);
 	bool addRule(string,int);
 	//bool modifyRule(const string);
+	bool delRule(string Subject, string Sname, string Action, string ControTimeFrom, string ControlTimeTo, string ContentId, string ContentType);
 	bool delRule(string Id);//param id
 	bool chkRule(string Subject,string Sname,string Action,string ControTimeFrom,string ControlTimeTo,string ContentId,string ContentType);
 	
@@ -100,6 +101,7 @@ public:
 	bool addKeyword(string Keyword, string StreamType, string ControlTimeFrom, string ControlTimeTo);
 	bool addKeyword(string,int);
 	vector<string> getAllKeywords();
+	bool delKeyword(string Keyword, string StreamType, string ControlTimeFrom, string ControlTimeTo);
 private:
 	SQLFactory sqlFactory=SQLFactory("select * from keywordtable","insert into keywordtable","delete from keywordtable");
 };
@@ -144,9 +146,10 @@ public:
 	bool addPz_id(Pz_idTable&);
 	bool addPz_id(string,int);
 	bool delPz_id(Pz_idTable&);
+	Pz_idTable getPz_idByTuple(string&, string&, string&);
 	
 private:
-	SQLFactory sqlFactory=SQLFactory("select * from pzxftable_id","insert into pzxftable_id","delete from pzxftable_id");
+	SQLFactory sqlFactory=SQLFactory("select PZUserID,PZResourceID,PZAction,PZOperator,PZOperateTime,PZControlTimeFrom,PZControlTimeTo,PZControlType,PZSNSType,ConfigId from pzxftable_id","insert into pzxftable_id","delete from pzxftable_id");
 	
 };
 

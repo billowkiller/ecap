@@ -67,7 +67,8 @@ bool Pz_kw::delPz_kw(Pz_kwTable& kwtable)
     char **azResult;
 	sqlite3_get_table(DBHandler::instance()->db, sql.c_str(), &azResult, &nrow, &ncolumn, &zErrMsg);
 	Pz_kwTable kwtable;
-	//if(ncolumn==8&&nrow=1)
+	//if(ncolumn==8&&nrow==1)
+	if(nrow>0)
 	{
 		int i;
 		i=ncolumn;

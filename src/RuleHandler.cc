@@ -84,6 +84,30 @@ bool RuleHandler::chkRule(string Subject,string Sname,string Action,string Contr
 	return DBHandler::instance()->checkRecord(sql);
 }
 
+bool RuleHandler::delRule(string Subject,string Sname,string Action,string ControlTimeFrom,string ControlTimeTo,string ContentId,string ContentType)
+{
+	vector<pair<string,string> > v;
+	if(!Subject.empty())
+		v.push_back(make_pair("Subject",Subject));
+	if(!Sname.empty())
+		v.push_back(make_pair("Sname",Sname));
+	if(!Action.empty())
+		v.push_back(make_pair("Action",Action));
+	if(!ControlTimeFrom.empty())
+		v.push_back(make_pair("ControlTimeFrom",ControlTimeFrom));
+	if(!ControlTimeTo.empty())
+		v.push_back(make_pair("ControlTimeTo",ControlTimeTo));
+	if(!ContentId.empty())
+		v.push_back(make_pair("ContentId",ContentId));
+	if(!ContentType.empty())
+		v.push_back(make_pair("ContentType",ContentType));
+	
+	
+	string sql=sqlFactory.makeDelSQL(v);
+	
+	return DBHandler::instance()->execSQL(sql);
+}
+
 bool RuleHandler::delRule(string Id)
 {
 	vector<pair<string,string> > v;

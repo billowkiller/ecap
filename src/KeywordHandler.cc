@@ -39,9 +39,29 @@ bool KeywordHandler::addKeyword(string Keyword, string StreamType, string Contro
 	
 	string sql=sqlFactory.makeAddSQL(v);
 	
-	StrMatcher::instance().addStr(Keyword);
+	//StrMatcher::instance().addStr(Keyword);
 	
 	return DBHandler::instance()->writeRecord(sql);
+	
+	
+}
+bool KeywordHandler::delKeyword(string Keyword, string StreamType, string ControlTimeFrom, string ControlTimeTo)
+{
+	vector<pair<string,string> > v;
+	if(!Keyword.empty())
+		v.push_back(make_pair("Keyword",Keyword));
+	if(!StreamType.empty())
+		v.push_back(make_pair("StreamType",StreamType));
+	if(!ControlTimeFrom.empty())
+		v.push_back(make_pair("ControlTimeFrom",ControlTimeFrom));
+	if(!ControlTimeTo.empty())
+		v.push_back(make_pair("ControlTimeTo",ControlTimeTo));
+	
+	string sql=sqlFactory.makeDelSQL(v);
+	
+	//StrMatcher::instance().addStr(Keyword);
+	
+	return DBHandler::instance()->execSQL(sql);
 	
 	
 }
@@ -68,6 +88,7 @@ bool KeywordHandler::addKeyword(string rule, int len)
     controltimeto.assign(rule,i,j-i);
 	
 	addKeyword(keyword,streamtype,controltimefrom,controltimeto);
+	StrMatcher::instance().addStr(keyword);
 	return 1;
 
 }
