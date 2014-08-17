@@ -1,5 +1,4 @@
-RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
- /usr/include/c++/4.7/iostream \
+Monitor.lo: Monitor.cc Monitor.h /usr/include/c++/4.7/string \
  /usr/include/c++/4.7/i686-linux-gnu/bits/c++config.h \
  /usr/include/c++/4.7/i686-linux-gnu/bits/os_defines.h \
  /usr/include/features.h /usr/include/i386-linux-gnu/bits/predefs.h \
@@ -8,21 +7,11 @@ RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
  /usr/include/i386-linux-gnu/gnu/stubs.h \
  /usr/include/i386-linux-gnu/gnu/stubs-32.h \
  /usr/include/c++/4.7/i686-linux-gnu/bits/cpu_defines.h \
- /usr/include/c++/4.7/ostream /usr/include/c++/4.7/ios \
- /usr/include/c++/4.7/iosfwd /usr/include/c++/4.7/bits/stringfwd.h \
- /usr/include/c++/4.7/bits/postypes.h /usr/include/c++/4.7/cwchar \
- /usr/include/wchar.h /usr/include/stdio.h \
- /usr/lib/gcc/i686-linux-gnu/4.7/include/stdarg.h \
- /usr/include/i386-linux-gnu/bits/wchar.h \
- /usr/lib/gcc/i686-linux-gnu/4.7/include/stddef.h /usr/include/xlocale.h \
- /usr/include/i386-linux-gnu/bits/wchar2.h /usr/include/c++/4.7/exception \
- /usr/include/c++/4.7/bits/atomic_lockfree_defines.h \
- /usr/include/c++/4.7/bits/exception_ptr.h \
- /usr/include/c++/4.7/bits/exception_defines.h \
- /usr/include/c++/4.7/bits/nested_exception.h \
+ /usr/include/c++/4.7/bits/stringfwd.h \
  /usr/include/c++/4.7/bits/char_traits.h \
  /usr/include/c++/4.7/bits/stl_algobase.h \
  /usr/include/c++/4.7/bits/functexcept.h \
+ /usr/include/c++/4.7/bits/exception_defines.h \
  /usr/include/c++/4.7/bits/cpp_type_traits.h \
  /usr/include/c++/4.7/ext/type_traits.h \
  /usr/include/c++/4.7/ext/numeric_traits.h \
@@ -32,17 +21,35 @@ RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
  /usr/include/c++/4.7/bits/stl_iterator_base_types.h \
  /usr/include/c++/4.7/bits/stl_iterator_base_funcs.h \
  /usr/include/c++/4.7/bits/stl_iterator.h \
- /usr/include/c++/4.7/debug/debug.h /usr/include/c++/4.7/cstdint \
+ /usr/include/c++/4.7/debug/debug.h /usr/include/c++/4.7/bits/postypes.h \
+ /usr/include/c++/4.7/cwchar /usr/include/wchar.h /usr/include/stdio.h \
+ /usr/lib/gcc/i686-linux-gnu/4.7/include/stdarg.h \
+ /usr/include/i386-linux-gnu/bits/wchar.h \
+ /usr/lib/gcc/i686-linux-gnu/4.7/include/stddef.h /usr/include/xlocale.h \
+ /usr/include/i386-linux-gnu/bits/wchar2.h /usr/include/c++/4.7/cstdint \
  /usr/lib/gcc/i686-linux-gnu/4.7/include/stdint.h /usr/include/stdint.h \
+ /usr/include/c++/4.7/bits/allocator.h \
+ /usr/include/c++/4.7/i686-linux-gnu/bits/c++allocator.h \
+ /usr/include/c++/4.7/ext/new_allocator.h /usr/include/c++/4.7/new \
+ /usr/include/c++/4.7/exception \
+ /usr/include/c++/4.7/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/4.7/bits/exception_ptr.h \
+ /usr/include/c++/4.7/bits/nested_exception.h \
  /usr/include/c++/4.7/bits/localefwd.h \
  /usr/include/c++/4.7/i686-linux-gnu/bits/c++locale.h \
  /usr/include/c++/4.7/clocale /usr/include/locale.h \
- /usr/include/i386-linux-gnu/bits/locale.h /usr/include/c++/4.7/cctype \
- /usr/include/ctype.h /usr/include/i386-linux-gnu/bits/types.h \
+ /usr/include/i386-linux-gnu/bits/locale.h /usr/include/c++/4.7/iosfwd \
+ /usr/include/c++/4.7/cctype /usr/include/ctype.h \
+ /usr/include/i386-linux-gnu/bits/types.h \
  /usr/include/i386-linux-gnu/bits/typesizes.h /usr/include/endian.h \
  /usr/include/i386-linux-gnu/bits/endian.h \
  /usr/include/i386-linux-gnu/bits/byteswap.h \
- /usr/include/c++/4.7/bits/ios_base.h \
+ /usr/include/c++/4.7/bits/ostream_insert.h \
+ /usr/include/c++/4.7/bits/cxxabi_forced.h \
+ /usr/include/c++/4.7/bits/stl_function.h \
+ /usr/include/c++/4.7/backward/binders.h \
+ /usr/include/c++/4.7/bits/range_access.h \
+ /usr/include/c++/4.7/bits/basic_string.h \
  /usr/include/c++/4.7/ext/atomicity.h \
  /usr/include/c++/4.7/i686-linux-gnu/bits/gthr.h \
  /usr/include/c++/4.7/i686-linux-gnu/bits/gthr-default.h \
@@ -53,16 +60,6 @@ RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
  /usr/include/i386-linux-gnu/bits/pthreadtypes.h \
  /usr/include/i386-linux-gnu/bits/setjmp.h \
  /usr/include/c++/4.7/i686-linux-gnu/bits/atomic_word.h \
- /usr/include/c++/4.7/bits/locale_classes.h /usr/include/c++/4.7/string \
- /usr/include/c++/4.7/bits/allocator.h \
- /usr/include/c++/4.7/i686-linux-gnu/bits/c++allocator.h \
- /usr/include/c++/4.7/ext/new_allocator.h /usr/include/c++/4.7/new \
- /usr/include/c++/4.7/bits/ostream_insert.h \
- /usr/include/c++/4.7/bits/cxxabi_forced.h \
- /usr/include/c++/4.7/bits/stl_function.h \
- /usr/include/c++/4.7/backward/binders.h \
- /usr/include/c++/4.7/bits/range_access.h \
- /usr/include/c++/4.7/bits/basic_string.h \
  /usr/include/c++/4.7/initializer_list \
  /usr/include/c++/4.7/ext/string_conversions.h \
  /usr/include/c++/4.7/cstdlib /usr/include/stdlib.h \
@@ -85,27 +82,17 @@ RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/c++/4.7/bits/functional_hash.h \
  /usr/include/c++/4.7/bits/hash_bytes.h \
- /usr/include/c++/4.7/bits/basic_string.tcc \
- /usr/include/c++/4.7/bits/locale_classes.tcc \
- /usr/include/c++/4.7/streambuf /usr/include/c++/4.7/bits/streambuf.tcc \
- /usr/include/c++/4.7/bits/basic_ios.h \
- /usr/include/c++/4.7/bits/locale_facets.h /usr/include/c++/4.7/cwctype \
- /usr/include/wctype.h \
- /usr/include/c++/4.7/i686-linux-gnu/bits/ctype_base.h \
- /usr/include/c++/4.7/bits/streambuf_iterator.h \
- /usr/include/c++/4.7/i686-linux-gnu/bits/ctype_inline.h \
- /usr/include/c++/4.7/bits/locale_facets.tcc \
- /usr/include/c++/4.7/bits/basic_ios.tcc \
- /usr/include/c++/4.7/bits/ostream.tcc /usr/include/c++/4.7/istream \
- /usr/include/c++/4.7/bits/istream.tcc /usr/include/c++/4.7/vector \
- /usr/include/c++/4.7/bits/stl_construct.h \
+ /usr/include/c++/4.7/bits/basic_string.tcc /usr/include/c++/4.7/atomic \
+ /usr/include/c++/4.7/bits/atomic_base.h \
+ /usr/lib/gcc/i686-linux-gnu/4.7/include/stdbool.h \
+ /usr/include/c++/4.7/vector /usr/include/c++/4.7/bits/stl_construct.h \
  /usr/include/c++/4.7/ext/alloc_traits.h \
  /usr/include/c++/4.7/bits/alloc_traits.h \
  /usr/include/c++/4.7/bits/ptr_traits.h \
  /usr/include/c++/4.7/bits/stl_uninitialized.h \
  /usr/include/c++/4.7/bits/stl_vector.h \
  /usr/include/c++/4.7/bits/stl_bvector.h \
- /usr/include/c++/4.7/bits/vector.tcc /usr/local/include/sqlite3.h \
+ /usr/include/c++/4.7/bits/vector.tcc \
  /usr/local/include/boost/utility.hpp \
  /usr/local/include/boost/utility/addressof.hpp \
  /usr/local/include/boost/config.hpp \
@@ -236,25 +223,23 @@ RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
  /usr/local/include/boost/type_traits/add_pointer.hpp \
  /usr/local/include/boost/checked_delete.hpp \
  /usr/local/include/boost/next_prior.hpp /usr/include/c++/4.7/iterator \
+ /usr/include/c++/4.7/ostream /usr/include/c++/4.7/ios \
+ /usr/include/c++/4.7/bits/ios_base.h \
+ /usr/include/c++/4.7/bits/locale_classes.h \
+ /usr/include/c++/4.7/bits/locale_classes.tcc \
+ /usr/include/c++/4.7/streambuf /usr/include/c++/4.7/bits/streambuf.tcc \
+ /usr/include/c++/4.7/bits/basic_ios.h \
+ /usr/include/c++/4.7/bits/locale_facets.h /usr/include/c++/4.7/cwctype \
+ /usr/include/wctype.h \
+ /usr/include/c++/4.7/i686-linux-gnu/bits/ctype_base.h \
+ /usr/include/c++/4.7/bits/streambuf_iterator.h \
+ /usr/include/c++/4.7/i686-linux-gnu/bits/ctype_inline.h \
+ /usr/include/c++/4.7/bits/locale_facets.tcc \
+ /usr/include/c++/4.7/bits/basic_ios.tcc \
+ /usr/include/c++/4.7/bits/ostream.tcc /usr/include/c++/4.7/istream \
+ /usr/include/c++/4.7/bits/istream.tcc \
  /usr/include/c++/4.7/bits/stream_iterator.h \
  /usr/local/include/boost/noncopyable.hpp \
- /usr/include/i386-linux-gnu/sys/socket.h \
- /usr/include/i386-linux-gnu/sys/uio.h \
- /usr/include/i386-linux-gnu/bits/uio.h \
- /usr/include/i386-linux-gnu/bits/socket.h \
- /usr/include/i386-linux-gnu/bits/sockaddr.h \
- /usr/include/i386-linux-gnu/asm/socket.h \
- /usr/include/asm-generic/socket.h \
- /usr/include/i386-linux-gnu/asm/sockios.h \
- /usr/include/asm-generic/sockios.h \
- /usr/include/i386-linux-gnu/bits/socket2.h /usr/include/netdb.h \
- /usr/include/netinet/in.h /usr/include/i386-linux-gnu/bits/in.h \
- /usr/include/rpc/netdb.h /usr/include/i386-linux-gnu/bits/siginfo.h \
- /usr/include/i386-linux-gnu/bits/netdb.h /usr/include/fcntl.h \
- /usr/include/i386-linux-gnu/bits/fcntl.h \
- /usr/include/i386-linux-gnu/bits/stat.h \
- /usr/include/i386-linux-gnu/bits/fcntl2.h \
- /usr/include/i386-linux-gnu/sys/epoll.h \
  /usr/local/include/boost/thread/thread.hpp \
  /usr/local/include/boost/thread/thread_only.hpp \
  /usr/local/include/boost/thread/detail/platform.hpp \
@@ -270,6 +255,7 @@ RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
  /usr/local/include/boost/system/config.hpp \
  /usr/local/include/boost/system/api_config.hpp \
  /usr/local/include/boost/cstdint.hpp /usr/local/include/boost/assert.hpp \
+ /usr/include/c++/4.7/iostream \
  /usr/local/include/boost/current_function.hpp \
  /usr/local/include/boost/operators.hpp \
  /usr/local/include/boost/iterator.hpp /usr/include/c++/4.7/functional \
@@ -593,13 +579,27 @@ RuleAccepter.lo: RuleAccepter.cc RuleAccepter.h SQLFactory.h \
  /usr/local/include/boost/thread/pthread/condition_variable.hpp \
  /usr/local/include/boost/thread/detail/thread_group.hpp \
  /usr/local/include/boost/thread/shared_mutex.hpp \
- /usr/local/include/boost/thread/pthread/shared_mutex.hpp
+ /usr/local/include/boost/thread/pthread/shared_mutex.hpp Debugger.h \
+ /usr/local/include/libecap/common/log.h \
+ /usr/local/include/libecap/common/libecap.h \
+ /usr/local/include/libecap/common/autoconf.h \
+ /usr/include/i386-linux-gnu/sys/socket.h \
+ /usr/include/i386-linux-gnu/sys/uio.h \
+ /usr/include/i386-linux-gnu/bits/uio.h \
+ /usr/include/i386-linux-gnu/bits/socket.h \
+ /usr/include/i386-linux-gnu/bits/sockaddr.h \
+ /usr/include/i386-linux-gnu/asm/socket.h \
+ /usr/include/asm-generic/socket.h \
+ /usr/include/i386-linux-gnu/asm/sockios.h \
+ /usr/include/asm-generic/sockios.h \
+ /usr/include/i386-linux-gnu/bits/socket2.h /usr/include/netdb.h \
+ /usr/include/netinet/in.h /usr/include/i386-linux-gnu/bits/in.h \
+ /usr/include/rpc/netdb.h /usr/include/i386-linux-gnu/bits/siginfo.h \
+ /usr/include/i386-linux-gnu/bits/netdb.h /usr/include/arpa/inet.h
 
-RuleAccepter.h:
+Monitor.h:
 
-SQLFactory.h:
-
-/usr/include/c++/4.7/iostream:
+/usr/include/c++/4.7/string:
 
 /usr/include/c++/4.7/i686-linux-gnu/bits/c++config.h:
 
@@ -619,47 +619,15 @@ SQLFactory.h:
 
 /usr/include/c++/4.7/i686-linux-gnu/bits/cpu_defines.h:
 
-/usr/include/c++/4.7/ostream:
-
-/usr/include/c++/4.7/ios:
-
-/usr/include/c++/4.7/iosfwd:
-
 /usr/include/c++/4.7/bits/stringfwd.h:
-
-/usr/include/c++/4.7/bits/postypes.h:
-
-/usr/include/c++/4.7/cwchar:
-
-/usr/include/wchar.h:
-
-/usr/include/stdio.h:
-
-/usr/lib/gcc/i686-linux-gnu/4.7/include/stdarg.h:
-
-/usr/include/i386-linux-gnu/bits/wchar.h:
-
-/usr/lib/gcc/i686-linux-gnu/4.7/include/stddef.h:
-
-/usr/include/xlocale.h:
-
-/usr/include/i386-linux-gnu/bits/wchar2.h:
-
-/usr/include/c++/4.7/exception:
-
-/usr/include/c++/4.7/bits/atomic_lockfree_defines.h:
-
-/usr/include/c++/4.7/bits/exception_ptr.h:
-
-/usr/include/c++/4.7/bits/exception_defines.h:
-
-/usr/include/c++/4.7/bits/nested_exception.h:
 
 /usr/include/c++/4.7/bits/char_traits.h:
 
 /usr/include/c++/4.7/bits/stl_algobase.h:
 
 /usr/include/c++/4.7/bits/functexcept.h:
+
+/usr/include/c++/4.7/bits/exception_defines.h:
 
 /usr/include/c++/4.7/bits/cpp_type_traits.h:
 
@@ -683,11 +651,45 @@ SQLFactory.h:
 
 /usr/include/c++/4.7/debug/debug.h:
 
+/usr/include/c++/4.7/bits/postypes.h:
+
+/usr/include/c++/4.7/cwchar:
+
+/usr/include/wchar.h:
+
+/usr/include/stdio.h:
+
+/usr/lib/gcc/i686-linux-gnu/4.7/include/stdarg.h:
+
+/usr/include/i386-linux-gnu/bits/wchar.h:
+
+/usr/lib/gcc/i686-linux-gnu/4.7/include/stddef.h:
+
+/usr/include/xlocale.h:
+
+/usr/include/i386-linux-gnu/bits/wchar2.h:
+
 /usr/include/c++/4.7/cstdint:
 
 /usr/lib/gcc/i686-linux-gnu/4.7/include/stdint.h:
 
 /usr/include/stdint.h:
+
+/usr/include/c++/4.7/bits/allocator.h:
+
+/usr/include/c++/4.7/i686-linux-gnu/bits/c++allocator.h:
+
+/usr/include/c++/4.7/ext/new_allocator.h:
+
+/usr/include/c++/4.7/new:
+
+/usr/include/c++/4.7/exception:
+
+/usr/include/c++/4.7/bits/atomic_lockfree_defines.h:
+
+/usr/include/c++/4.7/bits/exception_ptr.h:
+
+/usr/include/c++/4.7/bits/nested_exception.h:
 
 /usr/include/c++/4.7/bits/localefwd.h:
 
@@ -698,6 +700,8 @@ SQLFactory.h:
 /usr/include/locale.h:
 
 /usr/include/i386-linux-gnu/bits/locale.h:
+
+/usr/include/c++/4.7/iosfwd:
 
 /usr/include/c++/4.7/cctype:
 
@@ -713,7 +717,17 @@ SQLFactory.h:
 
 /usr/include/i386-linux-gnu/bits/byteswap.h:
 
-/usr/include/c++/4.7/bits/ios_base.h:
+/usr/include/c++/4.7/bits/ostream_insert.h:
+
+/usr/include/c++/4.7/bits/cxxabi_forced.h:
+
+/usr/include/c++/4.7/bits/stl_function.h:
+
+/usr/include/c++/4.7/backward/binders.h:
+
+/usr/include/c++/4.7/bits/range_access.h:
+
+/usr/include/c++/4.7/bits/basic_string.h:
 
 /usr/include/c++/4.7/ext/atomicity.h:
 
@@ -738,30 +752,6 @@ SQLFactory.h:
 /usr/include/i386-linux-gnu/bits/setjmp.h:
 
 /usr/include/c++/4.7/i686-linux-gnu/bits/atomic_word.h:
-
-/usr/include/c++/4.7/bits/locale_classes.h:
-
-/usr/include/c++/4.7/string:
-
-/usr/include/c++/4.7/bits/allocator.h:
-
-/usr/include/c++/4.7/i686-linux-gnu/bits/c++allocator.h:
-
-/usr/include/c++/4.7/ext/new_allocator.h:
-
-/usr/include/c++/4.7/new:
-
-/usr/include/c++/4.7/bits/ostream_insert.h:
-
-/usr/include/c++/4.7/bits/cxxabi_forced.h:
-
-/usr/include/c++/4.7/bits/stl_function.h:
-
-/usr/include/c++/4.7/backward/binders.h:
-
-/usr/include/c++/4.7/bits/range_access.h:
-
-/usr/include/c++/4.7/bits/basic_string.h:
 
 /usr/include/c++/4.7/initializer_list:
 
@@ -825,35 +815,11 @@ SQLFactory.h:
 
 /usr/include/c++/4.7/bits/basic_string.tcc:
 
-/usr/include/c++/4.7/bits/locale_classes.tcc:
+/usr/include/c++/4.7/atomic:
 
-/usr/include/c++/4.7/streambuf:
+/usr/include/c++/4.7/bits/atomic_base.h:
 
-/usr/include/c++/4.7/bits/streambuf.tcc:
-
-/usr/include/c++/4.7/bits/basic_ios.h:
-
-/usr/include/c++/4.7/bits/locale_facets.h:
-
-/usr/include/c++/4.7/cwctype:
-
-/usr/include/wctype.h:
-
-/usr/include/c++/4.7/i686-linux-gnu/bits/ctype_base.h:
-
-/usr/include/c++/4.7/bits/streambuf_iterator.h:
-
-/usr/include/c++/4.7/i686-linux-gnu/bits/ctype_inline.h:
-
-/usr/include/c++/4.7/bits/locale_facets.tcc:
-
-/usr/include/c++/4.7/bits/basic_ios.tcc:
-
-/usr/include/c++/4.7/bits/ostream.tcc:
-
-/usr/include/c++/4.7/istream:
-
-/usr/include/c++/4.7/bits/istream.tcc:
+/usr/lib/gcc/i686-linux-gnu/4.7/include/stdbool.h:
 
 /usr/include/c++/4.7/vector:
 
@@ -872,8 +838,6 @@ SQLFactory.h:
 /usr/include/c++/4.7/bits/stl_bvector.h:
 
 /usr/include/c++/4.7/bits/vector.tcc:
-
-/usr/local/include/sqlite3.h:
 
 /usr/local/include/boost/utility.hpp:
 
@@ -1143,51 +1107,47 @@ SQLFactory.h:
 
 /usr/include/c++/4.7/iterator:
 
+/usr/include/c++/4.7/ostream:
+
+/usr/include/c++/4.7/ios:
+
+/usr/include/c++/4.7/bits/ios_base.h:
+
+/usr/include/c++/4.7/bits/locale_classes.h:
+
+/usr/include/c++/4.7/bits/locale_classes.tcc:
+
+/usr/include/c++/4.7/streambuf:
+
+/usr/include/c++/4.7/bits/streambuf.tcc:
+
+/usr/include/c++/4.7/bits/basic_ios.h:
+
+/usr/include/c++/4.7/bits/locale_facets.h:
+
+/usr/include/c++/4.7/cwctype:
+
+/usr/include/wctype.h:
+
+/usr/include/c++/4.7/i686-linux-gnu/bits/ctype_base.h:
+
+/usr/include/c++/4.7/bits/streambuf_iterator.h:
+
+/usr/include/c++/4.7/i686-linux-gnu/bits/ctype_inline.h:
+
+/usr/include/c++/4.7/bits/locale_facets.tcc:
+
+/usr/include/c++/4.7/bits/basic_ios.tcc:
+
+/usr/include/c++/4.7/bits/ostream.tcc:
+
+/usr/include/c++/4.7/istream:
+
+/usr/include/c++/4.7/bits/istream.tcc:
+
 /usr/include/c++/4.7/bits/stream_iterator.h:
 
 /usr/local/include/boost/noncopyable.hpp:
-
-/usr/include/i386-linux-gnu/sys/socket.h:
-
-/usr/include/i386-linux-gnu/sys/uio.h:
-
-/usr/include/i386-linux-gnu/bits/uio.h:
-
-/usr/include/i386-linux-gnu/bits/socket.h:
-
-/usr/include/i386-linux-gnu/bits/sockaddr.h:
-
-/usr/include/i386-linux-gnu/asm/socket.h:
-
-/usr/include/asm-generic/socket.h:
-
-/usr/include/i386-linux-gnu/asm/sockios.h:
-
-/usr/include/asm-generic/sockios.h:
-
-/usr/include/i386-linux-gnu/bits/socket2.h:
-
-/usr/include/netdb.h:
-
-/usr/include/netinet/in.h:
-
-/usr/include/i386-linux-gnu/bits/in.h:
-
-/usr/include/rpc/netdb.h:
-
-/usr/include/i386-linux-gnu/bits/siginfo.h:
-
-/usr/include/i386-linux-gnu/bits/netdb.h:
-
-/usr/include/fcntl.h:
-
-/usr/include/i386-linux-gnu/bits/fcntl.h:
-
-/usr/include/i386-linux-gnu/bits/stat.h:
-
-/usr/include/i386-linux-gnu/bits/fcntl2.h:
-
-/usr/include/i386-linux-gnu/sys/epoll.h:
 
 /usr/local/include/boost/thread/thread.hpp:
 
@@ -1222,6 +1182,8 @@ SQLFactory.h:
 /usr/local/include/boost/cstdint.hpp:
 
 /usr/local/include/boost/assert.hpp:
+
+/usr/include/c++/4.7/iostream:
 
 /usr/local/include/boost/current_function.hpp:
 
@@ -1920,3 +1882,45 @@ SQLFactory.h:
 /usr/local/include/boost/thread/shared_mutex.hpp:
 
 /usr/local/include/boost/thread/pthread/shared_mutex.hpp:
+
+Debugger.h:
+
+/usr/local/include/libecap/common/log.h:
+
+/usr/local/include/libecap/common/libecap.h:
+
+/usr/local/include/libecap/common/autoconf.h:
+
+/usr/include/i386-linux-gnu/sys/socket.h:
+
+/usr/include/i386-linux-gnu/sys/uio.h:
+
+/usr/include/i386-linux-gnu/bits/uio.h:
+
+/usr/include/i386-linux-gnu/bits/socket.h:
+
+/usr/include/i386-linux-gnu/bits/sockaddr.h:
+
+/usr/include/i386-linux-gnu/asm/socket.h:
+
+/usr/include/asm-generic/socket.h:
+
+/usr/include/i386-linux-gnu/asm/sockios.h:
+
+/usr/include/asm-generic/sockios.h:
+
+/usr/include/i386-linux-gnu/bits/socket2.h:
+
+/usr/include/netdb.h:
+
+/usr/include/netinet/in.h:
+
+/usr/include/i386-linux-gnu/bits/in.h:
+
+/usr/include/rpc/netdb.h:
+
+/usr/include/i386-linux-gnu/bits/siginfo.h:
+
+/usr/include/i386-linux-gnu/bits/netdb.h:
+
+/usr/include/arpa/inet.h:

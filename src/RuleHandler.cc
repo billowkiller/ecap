@@ -1,5 +1,5 @@
 #include "SQLFactory.h"
-
+using namespace std;
 RuleHandler::RuleHandler()
 {
 	//sqlFactory=SQLFactory("select * from idblacklist","insert into idblacklist","delete from idblacklist");

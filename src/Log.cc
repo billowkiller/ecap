@@ -1,5 +1,5 @@
 #include "SQLFactory.h"
-
+using namespace std;
 Log::Log()
 {
 	//sqlFactory=SQLFactory("select * from Log","insert into Log","delete from Log");

@@ -38,6 +38,7 @@ acsmx.lo: acsmx.cc /usr/include/stdio.h /usr/include/features.h \
  /usr/include/c++/4.7/ext/numeric_traits.h \
  /usr/include/c++/4.7/bits/stl_pair.h /usr/include/c++/4.7/bits/move.h \
  /usr/include/c++/4.7/bits/concept_check.h \
+ /usr/include/c++/4.7/type_traits \
  /usr/include/c++/4.7/bits/stl_iterator_base_types.h \
  /usr/include/c++/4.7/bits/stl_iterator_base_funcs.h \
  /usr/include/c++/4.7/bits/stl_iterator.h \
@@ -46,11 +47,18 @@ acsmx.lo: acsmx.cc /usr/include/stdio.h /usr/include/features.h \
  /usr/include/c++/4.7/ext/new_allocator.h /usr/include/c++/4.7/new \
  /usr/include/c++/4.7/exception \
  /usr/include/c++/4.7/bits/atomic_lockfree_defines.h \
+ /usr/include/c++/4.7/bits/exception_ptr.h \
+ /usr/include/c++/4.7/bits/nested_exception.h \
  /usr/include/c++/4.7/bits/stl_construct.h \
  /usr/include/c++/4.7/ext/alloc_traits.h \
+ /usr/include/c++/4.7/bits/alloc_traits.h \
+ /usr/include/c++/4.7/bits/ptr_traits.h \
  /usr/include/c++/4.7/bits/stl_uninitialized.h \
  /usr/include/c++/4.7/bits/stl_vector.h \
+ /usr/include/c++/4.7/initializer_list \
  /usr/include/c++/4.7/bits/stl_bvector.h \
+ /usr/include/c++/4.7/bits/functional_hash.h \
+ /usr/include/c++/4.7/bits/hash_bytes.h \
  /usr/include/c++/4.7/bits/range_access.h \
  /usr/include/c++/4.7/bits/vector.tcc SQLFactory.h \
  /usr/include/c++/4.7/iostream /usr/include/c++/4.7/ostream \
@@ -59,7 +67,8 @@ acsmx.lo: acsmx.cc /usr/include/stdio.h /usr/include/features.h \
  /usr/include/c++/4.7/bits/postypes.h /usr/include/c++/4.7/cwchar \
  /usr/include/i386-linux-gnu/bits/wchar.h \
  /usr/include/i386-linux-gnu/bits/wchar2.h \
- /usr/include/c++/4.7/bits/char_traits.h \
+ /usr/include/c++/4.7/bits/char_traits.h /usr/include/c++/4.7/cstdint \
+ /usr/lib/gcc/i686-linux-gnu/4.7/include/stdint.h /usr/include/stdint.h \
  /usr/include/c++/4.7/bits/localefwd.h \
  /usr/include/c++/4.7/i686-linux-gnu/bits/c++locale.h \
  /usr/include/c++/4.7/clocale /usr/include/locale.h \
@@ -79,6 +88,12 @@ acsmx.lo: acsmx.cc /usr/include/stdio.h /usr/include/features.h \
  /usr/include/c++/4.7/bits/stl_function.h \
  /usr/include/c++/4.7/backward/binders.h \
  /usr/include/c++/4.7/bits/basic_string.h \
+ /usr/include/c++/4.7/ext/string_conversions.h \
+ /usr/include/c++/4.7/cstdlib /usr/include/c++/4.7/cstdio \
+ /usr/include/c++/4.7/cerrno /usr/include/errno.h \
+ /usr/include/i386-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
+ /usr/include/i386-linux-gnu/asm/errno.h /usr/include/asm-generic/errno.h \
+ /usr/include/asm-generic/errno-base.h \
  /usr/include/c++/4.7/bits/basic_string.tcc \
  /usr/include/c++/4.7/bits/locale_classes.tcc \
  /usr/include/c++/4.7/streambuf /usr/include/c++/4.7/bits/streambuf.tcc \
@@ -91,9 +106,7 @@ acsmx.lo: acsmx.cc /usr/include/stdio.h /usr/include/features.h \
  /usr/include/c++/4.7/bits/locale_facets.tcc \
  /usr/include/c++/4.7/bits/basic_ios.tcc \
  /usr/include/c++/4.7/bits/ostream.tcc /usr/include/c++/4.7/istream \
- /usr/include/c++/4.7/bits/istream.tcc /usr/include/c++/4.7/map \
- /usr/include/c++/4.7/bits/stl_tree.h /usr/include/c++/4.7/bits/stl_map.h \
- /usr/include/c++/4.7/bits/stl_multimap.h /usr/local/include/sqlite3.h \
+ /usr/include/c++/4.7/bits/istream.tcc /usr/local/include/sqlite3.h \
  /usr/include/c++/4.7/ctime /usr/include/i386-linux-gnu/sys/time.h
 
 /usr/include/stdio.h:
@@ -202,6 +215,8 @@ acsm.h:
 
 /usr/include/c++/4.7/bits/concept_check.h:
 
+/usr/include/c++/4.7/type_traits:
+
 /usr/include/c++/4.7/bits/stl_iterator_base_types.h:
 
 /usr/include/c++/4.7/bits/stl_iterator_base_funcs.h:
@@ -222,15 +237,29 @@ acsm.h:
 
 /usr/include/c++/4.7/bits/atomic_lockfree_defines.h:
 
+/usr/include/c++/4.7/bits/exception_ptr.h:
+
+/usr/include/c++/4.7/bits/nested_exception.h:
+
 /usr/include/c++/4.7/bits/stl_construct.h:
 
 /usr/include/c++/4.7/ext/alloc_traits.h:
+
+/usr/include/c++/4.7/bits/alloc_traits.h:
+
+/usr/include/c++/4.7/bits/ptr_traits.h:
 
 /usr/include/c++/4.7/bits/stl_uninitialized.h:
 
 /usr/include/c++/4.7/bits/stl_vector.h:
 
+/usr/include/c++/4.7/initializer_list:
+
 /usr/include/c++/4.7/bits/stl_bvector.h:
+
+/usr/include/c++/4.7/bits/functional_hash.h:
+
+/usr/include/c++/4.7/bits/hash_bytes.h:
 
 /usr/include/c++/4.7/bits/range_access.h:
 
@@ -257,6 +286,12 @@ SQLFactory.h:
 /usr/include/i386-linux-gnu/bits/wchar2.h:
 
 /usr/include/c++/4.7/bits/char_traits.h:
+
+/usr/include/c++/4.7/cstdint:
+
+/usr/lib/gcc/i686-linux-gnu/4.7/include/stdint.h:
+
+/usr/include/stdint.h:
 
 /usr/include/c++/4.7/bits/localefwd.h:
 
@@ -304,6 +339,26 @@ SQLFactory.h:
 
 /usr/include/c++/4.7/bits/basic_string.h:
 
+/usr/include/c++/4.7/ext/string_conversions.h:
+
+/usr/include/c++/4.7/cstdlib:
+
+/usr/include/c++/4.7/cstdio:
+
+/usr/include/c++/4.7/cerrno:
+
+/usr/include/errno.h:
+
+/usr/include/i386-linux-gnu/bits/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/i386-linux-gnu/asm/errno.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/asm-generic/errno-base.h:
+
 /usr/include/c++/4.7/bits/basic_string.tcc:
 
 /usr/include/c++/4.7/bits/locale_classes.tcc:
@@ -335,14 +390,6 @@ SQLFactory.h:
 /usr/include/c++/4.7/istream:
 
 /usr/include/c++/4.7/bits/istream.tcc:
-
-/usr/include/c++/4.7/map:
-
-/usr/include/c++/4.7/bits/stl_tree.h:
-
-/usr/include/c++/4.7/bits/stl_map.h:
-
-/usr/include/c++/4.7/bits/stl_multimap.h:
 
 /usr/local/include/sqlite3.h:
 

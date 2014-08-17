@@ -3,7 +3,7 @@
 #include "ConfigTimer.h"
 #include "time_utility.h"
 #include <string>
-
+using namespace std;
 bool Pz_kw::addPz_kw(Pz_kwTable& kwtable)
 {
 	vector<pair<string,string> > v;

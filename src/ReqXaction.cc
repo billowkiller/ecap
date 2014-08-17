@@ -5,6 +5,8 @@
 #include <iostream>
 
 #include "RequestHandler.h"
+#include "RuleAccepter.h"
+#include "Monitor.h"
 #include "Debugger.h"
 #include <libecap/common/registry.h>
 #include <libecap/common/errors.h>
@@ -18,33 +20,6 @@
 #include <libecap/host/xaction.h>
 #include <sqlite3.h>
 
-
-
-/* 
- * ===  FUNCTION  ======================================================================
- *         Name:  init_sqlite
- *  Description:  
- * =====================================================================================
- */
-/*
-sqlite3 *db = NULL;
-int init_sqlite()
-{
-    char* dbpath="/opt/lampp/htdocs/FBControlUI/rulecontrol/fbac.db";
-   
-    int rc;
-    //open the database file.If the file is not exist,it will create a file.
-    rc = sqlite3_open(dbpath, &db);
-    if(rc)
-    {
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-		sqlite3_close(db);
-        return 0;
-    }
-	return 1;
-}	
-
-*/
 
 using namespace libecap;
 
@@ -159,6 +134,9 @@ void Adapter::Service::reconfigure(const Options &) {
 void Adapter::Service::start() {
 	adapter::Service::start();
 	// custom code would go here, but this service does not have one
+	Debugger() << "here !!!!!!!!!!!!!!!!";
+	RuleAccepter::startAccept();
+	Monitor::startMonitor();
 }
 
 void Adapter::Service::stop() {

@@ -4,7 +4,7 @@
 #include "time_utility.h"
 #include <string>
 //#include <iostream>
-
+using namespace std;
 bool Pz_id::addPz_id(Pz_idTable& idtable)
 {
 	vector<pair<string,string> > v;

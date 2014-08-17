@@ -1,5 +1,6 @@
 #include "SQLFactory.h"
 
+using namespace std;
 /*const string chkSQLHeader;
 	const string addSQLHeader;
     const string delSQLHeader;//they are not static

@@ -1,5 +1,6 @@
 #ifndef ECAP_ADAPTER_RULEACCEPTER_H
 #define ECAP_ADAPTER_RULEACCEPTER_H
+
 #include "SQLFactory.h"
 #include <boost/utility.hpp>
 #include <string>

@@ -56,7 +56,9 @@ subdir = src
 DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/autoconf.h.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/cfgaux/libtool.m4 \
+am__aclocal_m4_deps =  \
+	$(top_srcdir)/cfgaux/ax_cxx_compile_stdcxx_11.m4 \
+	$(top_srcdir)/cfgaux/libtool.m4 \
 	$(top_srcdir)/cfgaux/ltoptions.m4 \
 	$(top_srcdir)/cfgaux/ltsugar.m4 \
 	$(top_srcdir)/cfgaux/ltversion.m4 \
@@ -106,7 +108,7 @@ am_ecap_request_la_OBJECTS = ReqXaction.lo Debugger.lo \
 	KeywordHandler.lo Log.lo SQLFactory.lo DBHandler.lo \
 	RuleHandler.lo StrMatcher.lo RuleAccepter.lo acsmx.lo Pz_id.lo \
 	Pz_kw.lo EventFuncs.lo time_utility.lo ConfigEvent.lo \
-	ConfigTimer.lo
+	ConfigTimer.lo Monitor.lo
 ecap_request_la_OBJECTS = $(am_ecap_request_la_OBJECTS)
 ecap_request_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -158,7 +160,7 @@ CPPFLAGS =
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe
+CXXFLAGS = -g -O1 -Wall -Wwrite-strings -Woverloaded-virtual -pipe -std=gnu++11
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
@@ -172,6 +174,7 @@ EGREP = /bin/grep -E
 EXEEXT = 
 FGREP = /bin/grep -F
 GREP = /bin/grep
+HAVE_CXX11 = 
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
@@ -291,6 +294,7 @@ noinst_HEADERS = \
 	time_utility.h\
 	ConfigEvent.h\
 	ConfigTimer.h\
+	Monitor.h\
 	autoconf.h 
 
 
@@ -314,10 +318,11 @@ ecap_request_la_SOURCES = ReqXaction.cc \
 				EventFuncs.cc\
 				time_utility.cc\
 				ConfigEvent.cc\
-				ConfigTimer.cc
+				ConfigTimer.cc\
+				Monitor.cc
 
 ecap_request_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_request_la_LIBADD = $(LIBECAP_LIBS) -lglib-2.0 -lsqlite3 -lboost_thread -lrt -lboost_system -lboost_date_time
+ecap_request_la_LIBADD = $(LIBECAP_LIBS) -lglib-2.0 -lsqlite3 -lboost_thread -lrt -lboost_system  -lboost_thread
 
 # response
 ecap_response_la_SOURCES = RespXaction.cc \
@@ -327,7 +332,7 @@ ecap_response_la_SOURCES = RespXaction.cc \
 	SubsFilter.cc 
 
 ecap_response_la_LDFLAGS = -module -avoid-version $(libecap_LIBS)
-ecap_response_la_LIBADD = $(LIBECAP_LIBS) -lz
+ecap_response_la_LIBADD = $(LIBECAP_LIBS) -lz -lboost_system -lboost_thread
 
 # -shared -export-dynamic -Wl,-soname,ecap_noop_adapter.so
 DISTCLEANFILES = \
@@ -435,6 +440,7 @@ include ./$(DEPDIR)/EventFuncs.Plo
 include ./$(DEPDIR)/Gzipper.Plo
 include ./$(DEPDIR)/KeywordHandler.Plo
 include ./$(DEPDIR)/Log.Plo
+include ./$(DEPDIR)/Monitor.Plo
 include ./$(DEPDIR)/Pz_id.Plo
 include ./$(DEPDIR)/Pz_kw.Plo
 include ./$(DEPDIR)/ReqXaction.Plo

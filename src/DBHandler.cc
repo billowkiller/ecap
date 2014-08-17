@@ -1,6 +1,7 @@
 #include "SQLFactory.h"
 #include <stdio.h>
 
+using namespace std;
 DBHandler* DBHandler::m_instance=NULL;
 
 DBHandler::DBHandler()

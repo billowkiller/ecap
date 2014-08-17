@@ -1,46 +1,45 @@
 #ifndef SQLFACTORY_INCLUDED
 #define SQLFACTORY_INCLUDED
+
 #include <iostream>
 #include <vector>
-#include <map>
 #include <string>
 #include <sqlite3.h>
 
-using namespace std;
-
-
 class SQLFactory{
-public:
-	SQLFactory(string chk,string add,string del);
 	
-	//static map<string,vector<string>> tableSchemes;//do not needed
+public:
+	SQLFactory(std::string chk,std::string add,std::string del);
+	
+	//static map<std::string,std::vector<std::string>> tableSchemes;//do not needed
 
-	string makeAddSQL(vector<pair<string,string> >&);
-	//string makeAddSQL(vector<string>&);
-	//string makeModSQL(vector<pair<string,string>>&);
-	//string makeModSQL(vector<string>&);
-	string makeDelSQL(vector<pair<string,string> >&);
-	//string makeDelSQL(vector<string>&);
-	string makeChkSQL(vector<pair<string,string> >&);
-	//string makeChkSQL(vector<string>&);
-	string makeRuleChkSQL(vector<pair<string,string> >&);
+	std::string makeAddSQL(std::vector<std::pair<std::string,std::string> >&);
+	//std::string makeAddSQL(std::vector<std::string>&);
+	//std::string makeModSQL(std::vector<std::pair<std::string,std::string>>&);
+	//std::string makeModSQL(std::vector<std::string>&);
+	std::string makeDelSQL(std::vector<std::pair<std::string,std::string> >&);
+	//std::string makeDelSQL(std::vector<std::string>&);
+	std::string makeChkSQL(std::vector<std::pair<std::string,std::string> >&);
+	//std::string makeChkSQL(std::vector<std::string>&);
+	std::string makeRuleChkSQL(std::vector<std::pair<std::string,std::string> >&);
   
 private:
-	const string chkSQLHeader;
-	const string addSQLHeader;
-    const string delSQLHeader;//they are not static
+	const std::string chkSQLHeader;
+	const std::string addSQLHeader;
+    const std::string delSQLHeader;//they are not static
 	
-	string makeConditionSQL(vector<pair<string,string> >&);
-    string makeRuleConditionSQL(vector<pair<string,string> >&);
+	std::string makeConditionSQL(std::vector<std::pair<std::string,std::string> >&);
+    std::string makeRuleConditionSQL(std::vector<std::pair<std::string,std::string> >&);
 };
 
 class DBHandler{
+	
 public:
 	//SQLFactory sqlFactory;
-	//vector<string> readRecord(string);
-	bool writeRecord(string);
-	bool checkRecord(string);
-	bool execSQL(string);
+	//std::vector<std::string> readRecord(std::string);
+	bool writeRecord(std::string);
+	bool checkRecord(std::string);
+	bool execSQL(std::string);
 	static DBHandler* instance(); 
 	sqlite3 *db;
 private:
@@ -52,42 +51,45 @@ private:
 };
 
 class RuleHandler{
+	
 public:
 	RuleHandler();
-	bool addRule(string Subject, string Sname, string Action, string ControTimeFrom, string ControlTimeTo, string ContentId, string ContentType);
-	bool addRule(string,int);
-	//bool modifyRule(const string);
-	bool delRule(string Subject, string Sname, string Action, string ControTimeFrom, string ControlTimeTo, string ContentId, string ContentType);
-	bool delRule(string Id);//param id
-	bool chkRule(string Subject,string Sname,string Action,string ControTimeFrom,string ControlTimeTo,string ContentId,string ContentType);
+	bool addRule(std::string Subject, std::string Sname, std::string Action, std::string ControTimeFrom, std::string ControlTimeTo, std::string ContentId, std::string ContentType);
+	bool addRule(std::string,int);
+	//bool modifyRule(const std::string);
+	bool delRule(std::string Subject, std::string Sname, std::string Action, std::string ControTimeFrom, std::string ControlTimeTo, std::string ContentId, std::string ContentType);
+	bool delRule(std::string Id);//param id
+	bool chkRule(std::string Subject,std::string Sname,std::string Action,std::string ControTimeFrom,std::string ControlTimeTo,std::string ContentId,std::string ContentType);
 	
 private:
-	//bool addTimer(ptime,function,string[],opreatorType);
+	//bool addTimer(ptime,function,std::string[],opreatorType);
 	//void dataTransform();
 	//static DBHandler* dbHandler;
 	SQLFactory sqlFactory=SQLFactory("select * from idblacklist","insert into idblacklist","delete from idblacklist");
 };
 
 class LogTable{
+	
 public:
-	string PZConfigId;
-	string UserId;
-	string Username;
-	string ResourceId;
-	string ResourceType;
-	string LogTime;
-	string Keyword;
-	string Action;
-	string SNSType;
-	string ClientIP;
-	string ServerIP;
-	string PZOperator;
-	string PZOperateTime;
-	string PZControlTimeFrom;
-	string PZControlTimeTo;
-	string PZControlType;
+	std::string PZConfigId;
+	std::string UserId;
+	std::string Username;
+	std::string ResourceId;
+	std::string ResourceType;
+	std::string LogTime;
+	std::string Keyword;
+	std::string Action;
+	std::string SNSType;
+	std::string ClientIP;
+	std::string ServerIP;
+	std::string PZOperator;
+	std::string PZOperateTime;
+	std::string PZControlTimeFrom;
+	std::string PZControlTimeTo;
+	std::string PZControlType;
 };
 class Log{
+	
 public:
 	Log();
 	bool addLog(LogTable logtable);
@@ -96,45 +98,49 @@ private:
 };
 
 class KeywordHandler{
+	
 public:
 	KeywordHandler();
-	bool addKeyword(string Keyword, string StreamType, string ControlTimeFrom, string ControlTimeTo);
-	bool addKeyword(string,int);
-	vector<string> getAllKeywords();
-	bool delKeyword(string Keyword, string StreamType, string ControlTimeFrom, string ControlTimeTo);
+	bool addKeyword(std::string Keyword, std::string StreamType, std::string ControlTimeFrom, std::string ControlTimeTo);
+	bool addKeyword(std::string,int);
+	std::vector<std::string> getAllKeywords();
+	bool delKeyword(std::string Keyword, std::string StreamType, std::string ControlTimeFrom, std::string ControlTimeTo);
 private:
 	SQLFactory sqlFactory=SQLFactory("select * from keywordtable","insert into keywordtable","delete from keywordtable");
 };
 class Pz_kwTable{
+	
 public:
-	string PZConfigId;
-	string PZControlContent;
-	string PZOperator;
-	string PZOperateTime;
-	string PZControlTimeFrom;
-	string PZControlTimeTo;
-	string PZControlType;
-	string PZStreamType;	
+	std::string PZConfigId;
+	std::string PZControlContent;
+	std::string PZOperator;
+	std::string PZOperateTime;
+	std::string PZControlTimeFrom;
+	std::string PZControlTimeTo;
+	std::string PZControlType;
+	std::string PZStreamType;	
 };
 class Pz_idTable{
+	
 public:
-	string ConfigId;
-	string PZUserID;
-	string PZResourceID;
-	string PZAction;
-	string PZOperator;
-	string PZOperateTime;
-	string PZControlTimeFrom;
-	string PZControlTimeTo;
-	string PZControlType;
-	string PZSNSType;
+	std::string ConfigId;
+	std::string PZUserID;
+	std::string PZResourceID;
+	std::string PZAction;
+	std::string PZOperator;
+	std::string PZOperateTime;
+	std::string PZControlTimeFrom;
+	std::string PZControlTimeTo;
+	std::string PZControlType;
+	std::string PZSNSType;
 };
 class Pz_kw{
+	
 public:
 	bool addPz_kw(Pz_kwTable&);
-	bool addPz_kw(string,int);
+	bool addPz_kw(std::string,int);
 	bool delPz_kw(Pz_kwTable&);
-    Pz_kwTable getPz_kwByKw(string);
+    Pz_kwTable getPz_kwByKw(std::string);
 	
 private:
 	//SQLFactory sqlFactory=SQLFactory("select * from pzxftable_keyword","insert into pzxftable_keyword","delete from pzxftable_keyword");
@@ -142,11 +148,12 @@ private:
 	
 };
 class Pz_id{
+	
 public:
 	bool addPz_id(Pz_idTable&);
-	bool addPz_id(string,int);
+	bool addPz_id(std::string,int);
 	bool delPz_id(Pz_idTable&);
-	Pz_idTable getPz_idByTuple(string&, string&, string&);
+	Pz_idTable getPz_idByTuple(std::string&, std::string&, std::string&);
 	
 private:
 	SQLFactory sqlFactory=SQLFactory("select PZUserID,PZResourceID,PZAction,PZOperator,PZOperateTime,PZControlTimeFrom,PZControlTimeTo,PZControlType,PZSNSType,ConfigId from pzxftable_id","insert into pzxftable_id","delete from pzxftable_id");
